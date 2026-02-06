@@ -19,6 +19,7 @@ COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
 
 COPY run.sh .
+RUN touch .env
 RUN chmod +x run.sh
 
 CMD ["./run.sh"]
