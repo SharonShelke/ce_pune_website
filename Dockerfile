@@ -26,4 +26,4 @@ COPY --from=build /app/target/ce-pune-backend-1.0-SNAPSHOT.jar ce-pune-backend-1
 # We expose a port for documentation, but the app binds to $PORT
 EXPOSE 8081
 
-ENTRYPOINT ["java", "-jar", "ce-pune-backend-1.0-SNAPSHOT.jar"]
+ENTRYPOINT ["sh", "-c", "ls -la /app && java -jar ce-pune-backend-1.0-SNAPSHOT.jar"]
