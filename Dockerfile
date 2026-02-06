@@ -24,7 +24,7 @@ COPY --from=build /app/target/ce-pune-backend-1.0-SNAPSHOT.jar app.jar
 # Render sets the PORT environment variable.
 # The app tracks this variable via server.port=${PORT:8081}
 # We expose a port for documentation, but the app binds to $PORT
-EXPOSE 8080
+EXPOSE 8081
 
 ENTRYPOINT ["java", "-jar", "/app/ce-pune-backend-1.0-SNAPSHOT.jar"]
 
