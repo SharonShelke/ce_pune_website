@@ -18,4 +18,7 @@ COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-jar","app.jar"]
+COPY run.sh .
+RUN chmod +x run.sh
+
+CMD ["./run.sh"]
