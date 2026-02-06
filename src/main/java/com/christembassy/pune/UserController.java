@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public User login(@RequestBody UserLoginRequest request) {
+    public ResponseEntity<?> login(@RequestBody UserLoginRequest request) {
         Optional<User> user = Optional.empty();
         if (request.getEmail() != null) {
             user = userRepository.findByEmail(request.getEmail());
@@ -57,7 +57,12 @@ public class UserController {
         } else if (request.getMacAddress() != null) {
             user = userRepository.findByMacAddress(request.getMacAddress());
         }
-        return user.orElse(null);
+
+        if (user.isPresent()) {
+            return ResponseEntity.ok(user.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"message\": \"Invalid credentials\"}");
+        }
     }
 
     @GetMapping("/users")
@@ -66,34 +71,34 @@ public class UserController {
     }
 
 
-@PostMapping("/forgot-password")
-public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest request) {
-    Optional<User> userOpt = Optional.empty();
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        Optional<User> userOpt = Optional.empty();
 
-    if (request.getEmail() != null) {
-        userOpt = userRepository.findByEmail(request.getEmail());
-    } else if (request.getPhone() != null) {
-        userOpt = userRepository.findByPhone(request.getPhone());
+        if (request.getEmail() != null) {
+            userOpt = userRepository.findByEmail(request.getEmail());
+        } else if (request.getPhone() != null) {
+            userOpt = userRepository.findByPhone(request.getPhone());
+        }
+
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        User user = userOpt.get();
+        String resetTokenOrOtp = UUID.randomUUID().toString().substring(0, 6);
+
+        if (request.getEmail() != null) {
+            emailService.sendResetLink(user.getEmail(), resetTokenOrOtp);
+            return ResponseEntity.ok("Reset link sent to email");
+        } else if (request.getPhone() != null) {
+            String otp = otpService.generateOtp();
+            otpService.sendOtp(user.getPhone(), otp);
+            return ResponseEntity.ok("OTP sent to phone");
+        }
+
+        return ResponseEntity.badRequest().body("Email or phone required");
     }
-
-    if (userOpt.isEmpty()) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-    }
-
-    User user = userOpt.get();
-    String resetTokenOrOtp = UUID.randomUUID().toString().substring(0, 6);
-
-    if (request.getEmail() != null) {
-        emailService.sendResetLink(user.getEmail(), resetTokenOrOtp);
-        return ResponseEntity.ok("Reset link sent to email");
-    } else if (request.getPhone() != null) {
-        String otp = otpService.generateOtp();
-        otpService.sendOtp(user.getPhone(), otp);
-        return ResponseEntity.ok("OTP sent to phone");
-    }
-
-    return ResponseEntity.badRequest().body("Email or phone required");
-}
 
 
 }
