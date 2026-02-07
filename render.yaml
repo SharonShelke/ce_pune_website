@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: ce-pune-website
+    env: docker
+    plan: free
+    healthCheckPath: /
+    startCommand: ./run.sh
+    envVars:
+      - key: PORT
+        value: 10000
