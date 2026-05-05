@@ -3,6 +3,7 @@ package com.christembassy.pune;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,13 +11,30 @@ import java.util.List;
 @Configuration
 public class DataInitializer {
 
-    @Bean
-    CommandLineRunner initDatabase(FellowshipRepository repository) {
-        return args -> {
-            if (repository.count() > 0) {
-                return; // Already populated
-            }
+    @Autowired
+    private FellowshipRepository fellowshipRepository;
 
+    @Autowired
+    private AnnouncementRepository announcementRepository;
+
+    @Bean
+    CommandLineRunner initDatabase() {
+        return args -> {
+            seedFellowships();
+            seedAnnouncements();
+        };
+    }
+
+    private void seedAnnouncements() {
+        if (announcementRepository.count() == 0) {
+            announcementRepository.save(new Announcement("2025 Year of manifestation", "Embrace the glory of His appearing", "🎉", 1));
+            announcementRepository.save(new Announcement("May - Month of \"advancement\"", "Moving forward by the Spirit", "😊", 2));
+            announcementRepository.save(new Announcement("Early Morning Prayer", "Join us daily at 5:30 AM", "⏰", 3));
+        }
+    }
+
+    private void seedFellowships() {
+        if (fellowshipRepository.count() == 0) {
             List<Fellowship> fellowships = Arrays.asList(
                 new Fellowship("ZOE 1", "PASTOR NANCY MATHEW", "86003 40609", "Online", "Saturdays, 5:00 PM", "A vibrant online community focused on Word-based fellowship."),
                 new Fellowship("FAVOR (P)", "BRO TONNIE DAS", "9923759249", "Pune", "Saturdays, 6:00 PM", "Growing together in grace and faith."),
@@ -57,7 +75,7 @@ public class DataInitializer {
                 new Fellowship("MAHIMA-01", "SIS NEHA", "7058613795", "Khole Vasti", "Saturdays, 6:00 PM", "Displaying the glory of God.")
             );
 
-            repository.saveAll(fellowships);
-        };
+            fellowshipRepository.saveAll(fellowships);
+        }
     }
 }
