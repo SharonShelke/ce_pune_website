@@ -1,6 +1,7 @@
 package com.christembassy.pune;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -11,12 +12,15 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Value("${FRONTEND_URL:http://15.206.166.139}")
+    private String frontendUrl;
+
     public void sendResetLink(String toEmail, String resetToken, String name) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(toEmail);
         message.setSubject("Reset Your Christ Embassy Pune Password");
 
-        String resetUrl = "http://15.206.166.139/reset-password?token=" + resetToken + "&email=" + toEmail;
+        String resetUrl = frontendUrl + "/reset-password?token=" + resetToken + "&email=" + toEmail;
         String greetingName = (name != null && !name.trim().isEmpty()) ? name : "";
 
         message.setText("Hi " + greetingName + "\n\n" +

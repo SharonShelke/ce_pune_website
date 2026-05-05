@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
 
-    @Value("${frontend.url:http://localhost:3007}")
+    @Value("${FRONTEND_URL:http://15.206.166.139}")
     private String frontendUrl;
 
 
