@@ -43,6 +43,7 @@ public class FellowshipController {
         joinRequest.setUserName(request.getName());
         joinRequest.setUserEmail(request.getEmail());
         joinRequest.setUserPhone(request.getPhone());
+        joinRequest.setUserAddress(request.getAddress());
         joinRequest.setMessage(request.getMessage());
         joinRequest.setStatus("PENDING");
         
@@ -56,6 +57,7 @@ public class FellowshipController {
                     request.getName(),
                     request.getEmail(),
                     request.getPhone(),
+                    request.getAddress(), // Added address
                     request.getMessage()
             );
             joinRequest.setEmailSent(true);

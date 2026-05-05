@@ -17,6 +17,7 @@ public class FellowshipJoinRequest {
     private String userName;
     private String userEmail;
     private String userPhone;
+    private String userAddress;
     private String message;
     private String sharedWithEmails;
 
@@ -41,6 +42,8 @@ public class FellowshipJoinRequest {
     public void setUserEmail(String userEmail) { this.userEmail = userEmail; }
     public String getUserPhone() { return userPhone; }
     public void setUserPhone(String userPhone) { this.userPhone = userPhone; }
+    public String getUserAddress() { return userAddress; }
+    public void setUserAddress(String userAddress) { this.userAddress = userAddress; }
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }
     public String getSharedWithEmails() { return sharedWithEmails; }

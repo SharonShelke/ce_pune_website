@@ -48,7 +48,7 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    public void sendFellowshipJoinNotification(String cellName, String name, String email, String phone, String messageContent) {
+    public void sendFellowshipJoinNotification(String cellName, String name, String email, String phone, String address, String messageContent) {
         SimpleMailMessage message = new SimpleMailMessage();
         String[] recipients = {"7jbking0102@gmail.com", "sharonshelke1@gmail.com"};
         message.setTo(recipients);
@@ -60,6 +60,7 @@ public class EmailService {
                 "Applicant: " + name + "\n" +
                 "Email: " + email + "\n" +
                 "Phone: " + phone + "\n" +
+                "Area/Locality: " + (address != null ? address : "N/A") + "\n" +
                 "Message: " + (messageContent != null ? messageContent : "N/A") + "\n\n" +
                 "Please coordinate with the cell leader for further action.\n\n" +
                 "Regards,\n" +
