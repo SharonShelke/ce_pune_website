@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/enrollment")
-@CrossOrigin(origins = "*") // Allow requests from frontend
 public class EnrollmentController {
 
     @Autowired
