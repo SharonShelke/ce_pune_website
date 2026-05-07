@@ -39,8 +39,8 @@ public class EmailService {
         message.setTo(recipients);
         message.setSubject("New Enrollment Request: " + name);
 
-        message.setText("Dear Administration,\n\n" +
-                "A new enrollment request has been received from the website.\n\n" +
+        message.setText("Dear Administrator,\n\n" +
+                "A new enrollment request has been received from the website for foundation school.\n\n" +
                 "Details:\n" +
                 "Name: " + name + "\n" +
                 "Phone: " + phone + "\n" +
