@@ -5,8 +5,17 @@ public class UserRegistrationRequest {
     private String phone;
     private String macAddress;
     private String name;
+    private String password;
     private  String deviceModel;
     private  String platoform;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public void setDeviceModel(String deviceModel) {
         this.deviceModel = deviceModel;

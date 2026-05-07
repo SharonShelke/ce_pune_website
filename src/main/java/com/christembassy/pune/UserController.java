@@ -29,19 +29,23 @@ public class UserController {
         String identifierType = null; // Will be set to "EMAIL" or "PHONE"
 
         // 1. Check if they provided an Email
+        String actualIdentifierValue = null;
         if (request.getEmail() != null && !request.getEmail().isEmpty()) {
             existing = userRepository.findByEmail(request.getEmail());
             identifierType = "EMAIL";
+            actualIdentifierValue = request.getEmail();
 
             // 2. Or check if they provided a Phone number
         } else if (request.getPhone() != null && !request.getPhone().isEmpty()) {
             existing = userRepository.findByPhone(request.getPhone());
             identifierType = "PHONE";
+            actualIdentifierValue = request.getPhone();
 
             // 3. Fallback to MAC Address
         } else if (request.getMacAddress() != null) {
             existing = userRepository.findByMacAddress(request.getMacAddress());
             identifierType = "MAC_ADDRESS";
+            actualIdentifierValue = request.getMacAddress();
         }
 
         // If user is already found in DB, return them
@@ -56,12 +60,12 @@ public class UserController {
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
 
-        // 👉 Set the new column to just SAY what type of registration this was
-        // It will store "EMAIL", "PHONE", or "MAC_ADDRESS"
-        user.setLoginIdentifier(identifierType);
+        // Set the actual login identifier value (email, phone, or mac)
+        user.setLoginIdentifier(actualIdentifierValue);
 
         user.setMacAddress(request.getMacAddress());
         user.setName(request.getName());
+        user.setPassword(request.getPassword());
         user.setRegisteredAt(LocalDateTime.now());
         user.setDeviceModel(request.getDeviceModel());
         user.setPlatform(request.getPlatoform());
