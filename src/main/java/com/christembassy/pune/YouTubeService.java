@@ -63,22 +63,8 @@ public class YouTubeService {
             e.printStackTrace();
         }
 
-        // 2. Fallback to latest video
-        String url = "https://www.googleapis.com/youtube/v3/search"
-                + "?key=" + apiKey
-                + "&channelId=" + channelId
-                + "&part=snippet,id"
-                + "&order=date"
-                + "&maxResults=1";
-
-        String response = restTemplate.getForObject(url, String.class);
-
-        JSONObject json = new JSONObject(response);
-        JSONArray items = json.getJSONArray("items");
-
-        JSONObject video = items.getJSONObject(0);
-        String videoId = video.getJSONObject("id").getString("videoId");
-
-        return videoId;
+        // 2. Fallback to specific video ID requested by user
+        System.out.println("No live/upcoming video found. Falling back to specific video: VjmBpyecvIo");
+        return "VjmBpyecvIo";
     }
 }

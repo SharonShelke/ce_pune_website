@@ -17,12 +17,40 @@ public class DataInitializer {
     @Autowired
     private AnnouncementRepository announcementRepository;
 
+    @Autowired
+    private SongRepository songRepository;
+
     @Bean
     CommandLineRunner initDatabase() {
         return args -> {
             seedFellowships();
             seedAnnouncements();
+            seedSongs();
         };
+    }
+
+    private void seedSongs() {
+        if (songRepository.count() == 0) {
+            songRepository.save(createSong("Holy God (Hindi)", "Loveworld Singers", "Worship", "🙌", "1jplsqZHF7O6YVHQU1KxZyuZLR60fdGd_", "10ZtKlhxhMhTRcZb9FYzFlWLRAzp97WsE", "A powerful Hindi worship song declaring the holiness of God."));
+            songRepository.save(createSong("All For You", "Loveworld Singers", "Worship", "🎶", "1y3sD0JV1-YeOkwqJJC4K8FE4PrXUl1CB", "1ZML7FTIg9aFGW0f46DXioogtD3M3l1sx", "A song of total surrender and devotion."));
+            songRepository.save(createSong("Life Immortality Unveiled", "Loveworld Singers", "Worship", "✨", "1cyaiMoFt6MplOPOzDdzAikO9QRqoN7Cp", "1XduYGN2cq_pIyQc-ehzZgcuJ436qYbN9", "Celebrating the life of God in us."));
+            songRepository.save(createSong("Lord You are Good", "Loveworld Singers", "Praise", "⭐", "1h-X6cBmONbpDlgm0gUNnXSeSS3FtCvMO", "145rZHKre6-DbzXkKAxejz62-T58H8t_x", "A joyous song of praise to our good God."));
+            songRepository.save(createSong("No God Greater Than You", "Loveworld Singers", "Worship", "🙏", "110QCs_y3MwSPkVh0K18vDKWqezcQeYRj", "1Zca7s4qw2rY-bRLf4l3xRLMpcFBFN58C", "Declaring the supremacy of our God."));
+        }
+    }
+
+    private Song createSong(String title, String artist, String cat, String icon, String driveId, String videoId, String desc) {
+        Song s = new Song();
+        s.setTitle(title);
+        s.setArtist(artist);
+        s.setCategory(cat);
+        s.setIcon(icon);
+        s.setDriveId(driveId);
+        s.setVideoDriveId(videoId);
+        s.setDescription(desc);
+        s.setLyrics("Lyrics coming soon...");
+        s.setTeachingNotes("Focus on the presence of the Holy Spirit while singing.");
+        return s;
     }
 
     private void seedAnnouncements() {
