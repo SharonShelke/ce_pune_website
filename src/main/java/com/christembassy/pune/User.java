@@ -49,9 +49,13 @@ public class User {
     public void setLoginIdentifier(String loginIdentifier) { this.loginIdentifier = loginIdentifier; }
     // NEW FIELD
     private String role; // "USER" or "ADMIN"
+    private String currentSessionToken;
     // Getters and Setters
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public String getCurrentSessionToken() { return currentSessionToken; }
+    public void setCurrentSessionToken(String currentSessionToken) { this.currentSessionToken = currentSessionToken; }
 
     // Getters and Setters for new fields
     public String getResetToken() { return resetToken; }

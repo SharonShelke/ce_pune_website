@@ -78,19 +78,30 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginRequest request) {
-        Optional<User> user = Optional.empty();
+        Optional<User> userOpt = Optional.empty();
 
-        // It simply checks the correct column based on what was provided
         if (request.getEmail() != null) {
-            user = userRepository.findByEmail(request.getEmail());
+            userOpt = userRepository.findByEmail(request.getEmail());
         } else if (request.getPhone() != null) {
-            user = userRepository.findByPhone(request.getPhone());
+            userOpt = userRepository.findByPhone(request.getPhone());
         } else if (request.getMacAddress() != null) {
-            user = userRepository.findByMacAddress(request.getMacAddress());
+            userOpt = userRepository.findByMacAddress(request.getMacAddress());
         }
 
-        if (user.isPresent()) {
-            return ResponseEntity.ok(user.get());
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            
+            // 1. Password check
+            if (user.getPassword() != null && !user.getPassword().equals(request.getPassword())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"message\": \"Invalid credentials\"}");
+            }
+
+            // 2. Generate and save NEW session token (invalidates all other devices)
+            String sessionToken = UUID.randomUUID().toString();
+            user.setCurrentSessionToken(sessionToken);
+            userRepository.save(user);
+
+            return ResponseEntity.ok(user);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"message\": \"Invalid credentials\"}");
         }

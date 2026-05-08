@@ -1,5 +1,6 @@
 package com.christembassy.pune;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
@@ -30,7 +31,15 @@ public class AttendanceController {
             int count = Integer.parseInt(payload.get("count").toString());
             Optional<User> userOptional = userRepository.findById(userId);
             if (userOptional.isPresent()) {
-                Attendance attendance = new Attendance(userOptional.get(), count);
+                User user = userOptional.get();
+                
+                // --- SESSION VERIFICATION ---
+                String providedToken = (String) payload.get("sessionToken");
+                if (user.getCurrentSessionToken() != null && !user.getCurrentSessionToken().equals(providedToken)) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Session expired or logged in on another device");
+                }
+
+                Attendance attendance = new Attendance(user, count);
                 attendanceRepository.save(attendance);
                 return ResponseEntity.ok("Attendance submitted successfully");
             } else {
