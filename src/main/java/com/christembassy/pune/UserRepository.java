@@ -21,6 +21,9 @@ import java.util.Optional;
 
         // 🆕 The new unified identifier search
         Optional<User> findByLoginIdentifier(String loginIdentifier);
+
+        Optional<User> findByGoogleId(String googleId);
+        Optional<User> findByKingschatId(String kingschatId);
     }
 
 

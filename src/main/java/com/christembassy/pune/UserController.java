@@ -23,55 +23,61 @@ public class UserController {
     OtpService otpService;
 
     @PostMapping("/register")
-    public User register(@RequestBody UserRegistrationRequest request) {
+    public ResponseEntity<?> register(@RequestBody UserRegistrationRequest request) {
+        try {
+            Optional<User> existing = Optional.empty();
+            String identifierType = null; // Will be set to "EMAIL" or "PHONE"
 
-        Optional<User> existing = Optional.empty();
-        String identifierType = null; // Will be set to "EMAIL" or "PHONE"
+            // 1. Check if they provided an Email
+            String actualIdentifierValue = null;
+            if (request.getEmail() != null && !request.getEmail().isEmpty()) {
+                existing = userRepository.findByEmail(request.getEmail());
+                identifierType = "EMAIL";
+                actualIdentifierValue = request.getEmail();
 
-        // 1. Check if they provided an Email
-        String actualIdentifierValue = null;
-        if (request.getEmail() != null && !request.getEmail().isEmpty()) {
-            existing = userRepository.findByEmail(request.getEmail());
-            identifierType = "EMAIL";
-            actualIdentifierValue = request.getEmail();
+                // 2. Or check if they provided a Phone number
+            } else if (request.getPhone() != null && !request.getPhone().isEmpty()) {
+                existing = userRepository.findByPhone(request.getPhone());
+                identifierType = "PHONE";
+                actualIdentifierValue = request.getPhone();
 
-            // 2. Or check if they provided a Phone number
-        } else if (request.getPhone() != null && !request.getPhone().isEmpty()) {
-            existing = userRepository.findByPhone(request.getPhone());
-            identifierType = "PHONE";
-            actualIdentifierValue = request.getPhone();
+                // 3. Fallback to MAC Address
+            } else if (request.getMacAddress() != null) {
+                existing = userRepository.findByMacAddress(request.getMacAddress());
+                identifierType = "MAC_ADDRESS";
+                actualIdentifierValue = request.getMacAddress();
+            }
 
-            // 3. Fallback to MAC Address
-        } else if (request.getMacAddress() != null) {
-            existing = userRepository.findByMacAddress(request.getMacAddress());
-            identifierType = "MAC_ADDRESS";
-            actualIdentifierValue = request.getMacAddress();
+            // If user is already found in DB, return them
+            if (existing.isPresent()) {
+                return ResponseEntity.ok(existing.get());
+            }
+
+            // --- NEW USER CREATION ---
+            User user = new User();
+
+            // Save the actual values in their correct columns
+            user.setEmail(request.getEmail());
+            user.setPhone(request.getPhone());
+
+            // Set the actual login identifier value (email, phone, or mac)
+            user.setLoginIdentifier(actualIdentifierValue);
+
+            user.setMacAddress(request.getMacAddress());
+            user.setName(request.getName());
+            user.setPassword(request.getPassword());
+            user.setRegisteredAt(LocalDateTime.now());
+            user.setDeviceModel(request.getDeviceModel());
+            user.setPlatform(request.getPlatoform());
+            user.setRole("USER");
+
+            User savedUser = userRepository.save(user);
+            return ResponseEntity.ok(savedUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"message\": \"Registration failed: " + e.getMessage() + "\"}");
         }
-
-        // If user is already found in DB, return them
-        if (existing.isPresent()) {
-            return existing.get();
-        }
-
-        // --- NEW USER CREATION ---
-        User user = new User();
-
-        // Save the actual values in their correct columns
-        user.setEmail(request.getEmail());
-        user.setPhone(request.getPhone());
-
-        // Set the actual login identifier value (email, phone, or mac)
-        user.setLoginIdentifier(actualIdentifierValue);
-
-        user.setMacAddress(request.getMacAddress());
-        user.setName(request.getName());
-        user.setPassword(request.getPassword());
-        user.setRegisteredAt(LocalDateTime.now());
-        user.setDeviceModel(request.getDeviceModel());
-        user.setPlatform(request.getPlatoform());
-        user.setRole("USER");
-
-        return userRepository.save(user);
     }
 
 
@@ -104,6 +110,86 @@ public class UserController {
             return ResponseEntity.ok(user);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"message\": \"Invalid credentials\"}");
+        }
+    }
+
+    @PostMapping("/google-login")
+    public ResponseEntity<?> googleLogin(@RequestBody GoogleLoginRequest request) {
+        try {
+            Optional<User> userOpt = userRepository.findByGoogleId(request.getGoogleId());
+            if (userOpt.isEmpty() && request.getEmail() != null) {
+                userOpt = userRepository.findByEmail(request.getEmail());
+            }
+
+            User user;
+            if (userOpt.isPresent()) {
+                user = userOpt.get();
+                if (user.getGoogleId() == null) {
+                    user.setGoogleId(request.getGoogleId());
+                }
+            } else {
+                user = new User();
+                user.setEmail(request.getEmail());
+                user.setName(request.getName());
+                user.setGoogleId(request.getGoogleId());
+                user.setRegisteredAt(LocalDateTime.now());
+                user.setRole("USER");
+            }
+
+            user.setDeviceModel(request.getDeviceModel());
+            user.setPlatform(request.getPlatform());
+            user.setMacAddress(request.getMacAddress());
+            
+            String sessionToken = UUID.randomUUID().toString();
+            user.setCurrentSessionToken(sessionToken);
+            
+            User savedUser = userRepository.save(user);
+            return ResponseEntity.ok(savedUser);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"message\": \"Google login failed: " + e.getMessage() + "\"}");
+        }
+    }
+
+    @PostMapping("/kingschat-login")
+    public ResponseEntity<?> kingschatLogin(@RequestBody KingsChatLoginRequest request) {
+        try {
+            Optional<User> userOpt = userRepository.findByKingschatId(request.getKingschatId());
+            if (userOpt.isEmpty() && request.getEmail() != null) {
+                userOpt = userRepository.findByEmail(request.getEmail());
+            }
+            if (userOpt.isEmpty() && request.getPhone() != null) {
+                userOpt = userRepository.findByPhone(request.getPhone());
+            }
+
+            User user;
+            if (userOpt.isPresent()) {
+                user = userOpt.get();
+                if (user.getKingschatId() == null) {
+                    user.setKingschatId(request.getKingschatId());
+                }
+            } else {
+                user = new User();
+                user.setEmail(request.getEmail());
+                user.setPhone(request.getPhone());
+                user.setName(request.getName());
+                user.setKingschatId(request.getKingschatId());
+                user.setRegisteredAt(LocalDateTime.now());
+                user.setRole("USER");
+            }
+
+            user.setDeviceModel(request.getDeviceModel());
+            user.setPlatform(request.getPlatform());
+            user.setMacAddress(request.getMacAddress());
+            
+            String sessionToken = UUID.randomUUID().toString();
+            user.setCurrentSessionToken(sessionToken);
+            
+            User savedUser = userRepository.save(user);
+            return ResponseEntity.ok(savedUser);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"message\": \"KingsChat login failed: " + e.getMessage() + "\"}");
         }
     }
 

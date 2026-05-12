@@ -89,4 +89,13 @@ public class User {
     public void setDeviceOsVersion(String deviceOsVersion) { this.deviceOsVersion = deviceOsVersion; }
     public String getPlatform() { return platform; }
     public void setPlatform(String platform) { this.platform = platform; }
+
+    private String googleId;
+    private String kingschatId;
+
+    public String getGoogleId() { return googleId; }
+    public void setGoogleId(String googleId) { this.googleId = googleId; }
+
+    public String getKingschatId() { return kingschatId; }
+    public void setKingschatId(String kingschatId) { this.kingschatId = kingschatId; }
 }
