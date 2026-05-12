@@ -1,3 +1,4 @@
+/*
 package com.christembassy.pune;
 
 import org.springframework.context.annotation.Bean;
@@ -26,3 +27,4 @@ public class CorsConfig {
         return new CorsFilter(source);
     }
 }
+*/
