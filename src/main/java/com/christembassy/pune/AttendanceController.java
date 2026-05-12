@@ -41,7 +41,6 @@ public class AttendanceController {
             } else {
                 return ResponseEntity.badRequest().body("User not found or not authenticated");
             }
-            }
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
