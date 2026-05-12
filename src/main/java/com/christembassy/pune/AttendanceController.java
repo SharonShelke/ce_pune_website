@@ -29,21 +29,18 @@ public class AttendanceController {
             if (userId == null) return ResponseEntity.badRequest().body("User ID is required");
 
             int count = Integer.parseInt(payload.get("count").toString());
-            Optional<User> userOptional = userRepository.findById(userId);
+            // Get the user from the SecurityContext (set by JwtFilter)
+            String loginIdentifier = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+            Optional<User> userOptional = userRepository.findByLoginIdentifier(loginIdentifier);
+            
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
-                
-                // --- SESSION VERIFICATION ---
-                String providedToken = (String) payload.get("sessionToken");
-                if (user.getCurrentSessionToken() != null && !user.getCurrentSessionToken().equals(providedToken)) {
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Session expired or logged in on another device");
-                }
-
                 Attendance attendance = new Attendance(user, count);
                 attendanceRepository.save(attendance);
                 return ResponseEntity.ok("Attendance submitted successfully");
             } else {
-                return ResponseEntity.badRequest().body("User not found");
+                return ResponseEntity.badRequest().body("User not found or not authenticated");
+            }
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -3,6 +3,7 @@ package com.christembassy.pune;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -17,61 +18,59 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
-    EmailService emailService;
+    private EmailService emailService;
 
     @Autowired
-    OtpService otpService;
+    private OtpService otpService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserRegistrationRequest request) {
         try {
             Optional<User> existing = Optional.empty();
-            String identifierType = null; // Will be set to "EMAIL" or "PHONE"
-
-            // 1. Check if they provided an Email
             String actualIdentifierValue = null;
+
             if (request.getEmail() != null && !request.getEmail().isEmpty()) {
                 existing = userRepository.findByEmail(request.getEmail());
-                identifierType = "EMAIL";
                 actualIdentifierValue = request.getEmail();
-
-                // 2. Or check if they provided a Phone number
             } else if (request.getPhone() != null && !request.getPhone().isEmpty()) {
                 existing = userRepository.findByPhone(request.getPhone());
-                identifierType = "PHONE";
                 actualIdentifierValue = request.getPhone();
-
-                // 3. Fallback to MAC Address
-            } else if (request.getMacAddress() != null) {
-                existing = userRepository.findByMacAddress(request.getMacAddress());
-                identifierType = "MAC_ADDRESS";
-                actualIdentifierValue = request.getMacAddress();
             }
 
-            // If user is already found in DB, return them
             if (existing.isPresent()) {
-                return ResponseEntity.ok(existing.get());
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"message\": \"User already exists\"}");
             }
 
-            // --- NEW USER CREATION ---
             User user = new User();
-
-            // Save the actual values in their correct columns
             user.setEmail(request.getEmail());
             user.setPhone(request.getPhone());
-
-            // Set the actual login identifier value (email, phone, or mac)
             user.setLoginIdentifier(actualIdentifierValue);
-
             user.setMacAddress(request.getMacAddress());
             user.setName(request.getName());
-            user.setPassword(request.getPassword());
+            
+            // --- HASH THE PASSWORD ---
+            if (request.getPassword() != null) {
+                user.setPassword(passwordEncoder.encode(request.getPassword()));
+            }
+
             user.setRegisteredAt(LocalDateTime.now());
             user.setDeviceModel(request.getDeviceModel());
             user.setPlatform(request.getPlatoform());
             user.setRole("USER");
 
             User savedUser = userRepository.save(user);
+            
+            // Return token for immediate login after registration
+            String token = jwtUtils.generateToken(actualIdentifierValue);
+            savedUser.setCurrentSessionToken(token); // Or just return in a map
+            userRepository.save(savedUser);
+
             return ResponseEntity.ok(savedUser);
         } catch (Exception e) {
             e.printStackTrace();
@@ -79,8 +78,6 @@ public class UserController {
                     .body("{\"message\": \"Registration failed: " + e.getMessage() + "\"}");
         }
     }
-
-
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginRequest request) {
@@ -90,21 +87,18 @@ public class UserController {
             userOpt = userRepository.findByEmail(request.getEmail());
         } else if (request.getPhone() != null) {
             userOpt = userRepository.findByPhone(request.getPhone());
-        } else if (request.getMacAddress() != null) {
-            userOpt = userRepository.findByMacAddress(request.getMacAddress());
         }
 
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             
-            // 1. Password check
-            if (user.getPassword() != null && !user.getPassword().equals(request.getPassword())) {
+            // --- CHECK HASHED PASSWORD ---
+            if (user.getPassword() != null && !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"message\": \"Invalid credentials\"}");
             }
 
-            // 2. Generate and save NEW session token (invalidates all other devices)
-            String sessionToken = UUID.randomUUID().toString();
-            user.setCurrentSessionToken(sessionToken);
+            String token = jwtUtils.generateToken(user.getLoginIdentifier());
+            user.setCurrentSessionToken(token);
             userRepository.save(user);
 
             return ResponseEntity.ok(user);
@@ -130,6 +124,7 @@ public class UserController {
             } else {
                 user = new User();
                 user.setEmail(request.getEmail());
+                user.setLoginIdentifier(request.getEmail());
                 user.setName(request.getName());
                 user.setGoogleId(request.getGoogleId());
                 user.setRegisteredAt(LocalDateTime.now());
@@ -140,8 +135,8 @@ public class UserController {
             user.setPlatform(request.getPlatform());
             user.setMacAddress(request.getMacAddress());
             
-            String sessionToken = UUID.randomUUID().toString();
-            user.setCurrentSessionToken(sessionToken);
+            String token = jwtUtils.generateToken(user.getLoginIdentifier() != null ? user.getLoginIdentifier() : request.getEmail());
+            user.setCurrentSessionToken(token);
             
             User savedUser = userRepository.save(user);
             return ResponseEntity.ok(savedUser);
@@ -172,6 +167,7 @@ public class UserController {
                 user = new User();
                 user.setEmail(request.getEmail());
                 user.setPhone(request.getPhone());
+                user.setLoginIdentifier(request.getEmail() != null ? request.getEmail() : request.getPhone());
                 user.setName(request.getName());
                 user.setKingschatId(request.getKingschatId());
                 user.setRegisteredAt(LocalDateTime.now());
@@ -182,8 +178,8 @@ public class UserController {
             user.setPlatform(request.getPlatform());
             user.setMacAddress(request.getMacAddress());
             
-            String sessionToken = UUID.randomUUID().toString();
-            user.setCurrentSessionToken(sessionToken);
+            String token = jwtUtils.generateToken(user.getLoginIdentifier());
+            user.setCurrentSessionToken(token);
             
             User savedUser = userRepository.save(user);
             return ResponseEntity.ok(savedUser);
