@@ -7,14 +7,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
 
-    @Value("${FRONTEND_URL:http://15.206.166.139}")
+    @Value("${FRONTEND_URL:http://65.2.144.124}")
     private String frontendUrl;
 
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(frontendUrl,"http://15.206.166.139")
+                .allowedOrigins(frontendUrl,"http://65.2.144.124")
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
