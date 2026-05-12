@@ -263,7 +263,7 @@ public class UserController {
                 if (request.token != null && request.token.equals(user.getResetToken()) && 
                     user.getTokenExpiry() != null && user.getTokenExpiry().isAfter(LocalDateTime.now())) {
                     
-                    user.setPassword(request.newPassword);
+                    user.setPassword(passwordEncoder.encode(request.newPassword));
                     user.setResetToken(null);
                     user.setTokenExpiry(null);
                     userRepository.save(user);
@@ -277,7 +277,7 @@ public class UserController {
                  if (request.otp != null && request.otp.equals(user.getResetOtp()) &&
                      user.getOtpExpiry() != null && user.getOtpExpiry().isAfter(LocalDateTime.now())) {
                      
-                     user.setPassword(request.newPassword);
+                     user.setPassword(passwordEncoder.encode(request.newPassword));
                      user.setResetOtp(null);
                      user.setOtpExpiry(null);
                      userRepository.save(user);
