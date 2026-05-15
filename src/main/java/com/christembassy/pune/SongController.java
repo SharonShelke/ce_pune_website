@@ -1,17 +1,15 @@
 package com.christembassy.pune;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/songs")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class SongController {
 
     @Autowired
@@ -22,24 +20,21 @@ public class SongController {
         return songRepository.findAll();
     }
 
-    @GetMapping("/{id}/stream")
-    public ResponseEntity<Resource> streamSong(@PathVariable Long id) {
-        Song song = songRepository.findById(id).orElse(null);
-        if (song == null || song.getDriveId() == null) {
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/{id}")
+    public ResponseEntity<Song> getSongById(@PathVariable Long id) {
+        Optional<Song> song = songRepository.findById(id);
+        return song.map(ResponseEntity::ok)
+                   .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
-        String driveUrl = "https://docs.google.com/uc?export=download&id=" + song.getDriveId();
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            byte[] audioData = restTemplate.getForObject(driveUrl, byte[].class);
-            ByteArrayResource resource = new ByteArrayResource(audioData);
+    @PostMapping
+    public Song createSong(@RequestBody Song song) {
+        return songRepository.save(song);
+    }
 
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType("audio/mpeg"))
-                    .body(resource);
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteSong(@PathVariable Long id) {
+        songRepository.deleteById(id);
+        return ResponseEntity.ok("Song deleted");
     }
 }

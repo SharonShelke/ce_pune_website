@@ -8,6 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/announcements")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AnnouncementController {
 
     @Autowired
