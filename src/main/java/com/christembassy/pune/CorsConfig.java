@@ -12,19 +12,10 @@ import java.util.Arrays;
 @Configuration
 public class CorsConfig {
 
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        
-        config.setAllowCredentials(true);
-        // Use allowedOriginPatterns instead of allowedOrigins for compatibility with allowCredentials(true)
-        config.addAllowedOriginPattern("*"); 
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-        
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
-    }
+    // Commented out to avoid conflicts with SecurityConfig's CORS handling
+    // @Bean
+    // public CorsFilter corsFilter() {
+    //     ...
+    // }
 }
 */
