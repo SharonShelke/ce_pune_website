@@ -12,7 +12,7 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Value("${FRONTEND_URL:http://13.201.48.45}")
+    @Value("${FRONTEND_URL:http://3.111.187.235}")
     private String frontendUrl;
 
     public void sendResetLink(String toEmail, String resetToken, String name) {
