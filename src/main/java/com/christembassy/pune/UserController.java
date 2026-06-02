@@ -268,6 +268,14 @@ public class UserController {
                     user.setResetToken(null);
                     user.setTokenExpiry(null);
                     userRepository.save(user);
+                    
+                    if (user.getEmail() != null && !user.getEmail().trim().isEmpty()) {
+                        try {
+                            emailService.sendPasswordResetSuccessEmail(user.getEmail(), user.getName());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                     return ResponseEntity.ok("Password reset successfully");
                 }
             }
@@ -282,6 +290,14 @@ public class UserController {
                      user.setResetOtp(null);
                      user.setOtpExpiry(null);
                      userRepository.save(user);
+                     
+                     if (user.getEmail() != null && !user.getEmail().trim().isEmpty()) {
+                         try {
+                             emailService.sendPasswordResetSuccessEmail(user.getEmail(), user.getName());
+                         } catch (Exception e) {
+                             e.printStackTrace();
+                         }
+                     }
                      return ResponseEntity.ok("Password reset successfully");
                  }
              }

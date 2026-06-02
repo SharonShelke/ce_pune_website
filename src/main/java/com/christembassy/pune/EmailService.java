@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class EmailService {
@@ -69,6 +72,26 @@ public class EmailService {
                 "Please coordinate with the cell leader for further action.\n\n" +
                 "Regards,\n" +
                 "CE Pune Website");
+
+        mailSender.send(message);
+    }
+
+    public void sendPasswordResetSuccessEmail(String toEmail, String name) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject("Password Reset Successful - Christ Embassy Pune");
+
+        ZonedDateTime istDateTime = ZonedDateTime.now(ZoneId.of("Asia/Kolkata"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy, hh:mm a");
+        String formattedDate = istDateTime.format(formatter) + " (IST)";
+
+        String greetingName = (name != null && !name.trim().isEmpty()) ? name : "";
+
+        message.setText("Hi " + greetingName + ",\n\n" +
+                "This is a confirmation that the password for your Christ Embassy Pune account " +
+                "associated with email " + toEmail + " was successfully reset on " + formattedDate + ".\n\n" +
+                "If you did not perform this action, please contact the administrator immediately.\n\n" +
+                "God Bless,\nChrist Embassy Pune");
 
         mailSender.send(message);
     }
