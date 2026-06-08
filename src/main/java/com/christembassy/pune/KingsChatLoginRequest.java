@@ -6,6 +6,12 @@ public class KingsChatLoginRequest {
     private String kingschatId;
     private String phone;
     
+    // New fields matching frontend payload
+    private String token;
+    private String firstName;
+    private String lastName;
+    private String username;
+
     // Device info
     private String deviceModel;
     private String platform;
@@ -23,6 +29,19 @@ public class KingsChatLoginRequest {
 
     public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }
+
+    // New getters and setters for added fields
+    public String getToken() { return token; }
+    public void setToken(String token) { this.token = token; }
+
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
 
     public String getDeviceModel() { return deviceModel; }
     public void setDeviceModel(String deviceModel) { this.deviceModel = deviceModel; }
