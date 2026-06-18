@@ -151,20 +151,35 @@ public class UserController {
     public ResponseEntity<?> kingchatLogin(@RequestBody KingsChatLoginRequest request) {
         try {
             // Support both getKingschatId() and getUsername() since frontend sends it as username
-            String kcId = request.getKingschatId() != null && !request.getKingschatId().isEmpty()
-                    ? request.getKingschatId()
-                    : request.getUsername();
+            String kcId = request.getKingschatId() != null && !request.getKingschatId().trim().isEmpty()
+                    ? request.getKingschatId().trim()
+                    : (request.getUsername() != null && !request.getUsername().trim().isEmpty()
+                        ? request.getUsername().trim() : null);
+
+            // Sanitize email and phone: treat empty/whitespace strings as null
+            // to avoid unique constraint violations on empty strings in the database
+            String email = (request.getEmail() != null && !request.getEmail().trim().isEmpty())
+                    ? request.getEmail().trim() : null;
+            String phone = (request.getPhone() != null && !request.getPhone().trim().isEmpty())
+                    ? request.getPhone().trim() : null;
+            String macAddress = (request.getMacAddress() != null && !request.getMacAddress().trim().isEmpty())
+                    ? request.getMacAddress().trim() : null;
+
+            // Generate a fallback email if none provided (matching portal pattern)
+            if (email == null && kcId != null) {
+                email = kcId + "@kingschat.com";
+            }
 
             // Find existing user by email, KingsChat ID, or phone
             Optional<User> userOpt = Optional.empty();
-            if (request.getEmail() != null && !request.getEmail().isEmpty()) {
-                userOpt = userRepository.findByEmail(request.getEmail());
+            if (email != null) {
+                userOpt = userRepository.findByEmail(email);
             }
-            if (userOpt.isEmpty() && kcId != null && !kcId.isEmpty()) {
+            if (userOpt.isEmpty() && kcId != null) {
                 userOpt = userRepository.findByKingschatId(kcId);
             }
-            if (userOpt.isEmpty() && request.getPhone() != null && !request.getPhone().isEmpty()) {
-                userOpt = userRepository.findByPhone(request.getPhone());
+            if (userOpt.isEmpty() && phone != null) {
+                userOpt = userRepository.findByPhone(phone);
             }
 
             User user;
@@ -182,14 +197,17 @@ public class UserController {
                 if (user.getKingschatId() == null && kcId != null) {
                     user.setKingschatId(kcId);
                 }
+                // Set loginIdentifier if missing
+                if (user.getLoginIdentifier() == null || user.getLoginIdentifier().trim().isEmpty()) {
+                    user.setLoginIdentifier(email != null ? email : (phone != null ? phone : kcId));
+                }
             } else {
                 user = new User();
-                user.setEmail(request.getEmail());
-                user.setPhone(request.getPhone());
+                user.setEmail(email);
+                user.setPhone(phone);
                 
-                // Fallback to kcId for login identifier if email and phone are null
-                String loginId = request.getEmail() != null ? request.getEmail()
-                        : (request.getPhone() != null ? request.getPhone() : kcId);
+                // Fallback login identifier chain: email -> phone -> kcId
+                String loginId = email != null ? email : (phone != null ? phone : kcId);
                 user.setLoginIdentifier(loginId);
                 
                 // Build name from first/last names
@@ -197,27 +215,33 @@ public class UserController {
                 if (request.getLastName() != null && !request.getLastName().isEmpty()) {
                     fullName = (fullName.isEmpty() ? "" : fullName + " ") + request.getLastName();
                 }
+                if (fullName.isEmpty()) {
+                    fullName = "KingsChat User";
+                }
                 user.setName(fullName);
                 user.setKingschatId(kcId);
                 user.setRole("USER");
                 user.setRegisteredAt(LocalDateTime.now());
             }
 
-            // Populate device information
+            // Populate device information (sanitized)
             user.setDeviceModel(request.getDeviceModel());
             user.setPlatform(request.getPlatform());
-            user.setMacAddress(request.getMacAddress());
+            user.setMacAddress(macAddress);
 
-            // Generate JWT for our application (ignore KingsChat token field)
+            // Generate JWT for our application
             String token = jwtUtils.generateToken(user.getLoginIdentifier());
             user.setCurrentSessionToken(token);
 
-            User savedUser = userRepository.save(user);
+            // Use saveAndFlush to force immediate DB execution so any constraint
+            // violation is caught inside this try-catch block
+            User savedUser = userRepository.saveAndFlush(user);
             return ResponseEntity.ok(savedUser);
         } catch (Exception e) {
             e.printStackTrace();
+            // Return a Map so Spring/Jackson serializes valid JSON automatically
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"message\": \"KingsChat login failed: " + e.getMessage() + "\"}");
+                    .body(java.util.Map.of("message", "KingsChat login failed: " + e.getMessage()));
         }
     }
 
