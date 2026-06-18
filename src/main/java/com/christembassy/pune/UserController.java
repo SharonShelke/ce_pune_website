@@ -147,16 +147,21 @@ public class UserController {
         }
     }
 
-    @PostMapping("/kingchat")
+    @PostMapping({"/kingchat", "/kingschat-login"})
     public ResponseEntity<?> kingchatLogin(@RequestBody KingsChatLoginRequest request) {
         try {
+            // Support both getKingschatId() and getUsername() since frontend sends it as username
+            String kcId = request.getKingschatId() != null && !request.getKingschatId().isEmpty()
+                    ? request.getKingschatId()
+                    : request.getUsername();
+
             // Find existing user by email, KingsChat ID, or phone
             Optional<User> userOpt = Optional.empty();
             if (request.getEmail() != null && !request.getEmail().isEmpty()) {
                 userOpt = userRepository.findByEmail(request.getEmail());
             }
-            if (userOpt.isEmpty() && request.getKingschatId() != null && !request.getKingschatId().isEmpty()) {
-                userOpt = userRepository.findByKingschatId(request.getKingschatId());
+            if (userOpt.isEmpty() && kcId != null && !kcId.isEmpty()) {
+                userOpt = userRepository.findByKingschatId(kcId);
             }
             if (userOpt.isEmpty() && request.getPhone() != null && !request.getPhone().isEmpty()) {
                 userOpt = userRepository.findByPhone(request.getPhone());
@@ -174,21 +179,26 @@ public class UserController {
                     user.setName(fullName);
                 }
                 // Set Kingschat ID if not already set
-                if (user.getKingschatId() == null && request.getKingschatId() != null) {
-                    user.setKingschatId(request.getKingschatId());
+                if (user.getKingschatId() == null && kcId != null) {
+                    user.setKingschatId(kcId);
                 }
             } else {
                 user = new User();
                 user.setEmail(request.getEmail());
                 user.setPhone(request.getPhone());
-                user.setLoginIdentifier(request.getEmail() != null ? request.getEmail() : request.getPhone());
+                
+                // Fallback to kcId for login identifier if email and phone are null
+                String loginId = request.getEmail() != null ? request.getEmail()
+                        : (request.getPhone() != null ? request.getPhone() : kcId);
+                user.setLoginIdentifier(loginId);
+                
                 // Build name from first/last names
                 String fullName = request.getFirstName() != null ? request.getFirstName() : "";
                 if (request.getLastName() != null && !request.getLastName().isEmpty()) {
                     fullName = (fullName.isEmpty() ? "" : fullName + " ") + request.getLastName();
                 }
                 user.setName(fullName);
-                user.setKingschatId(request.getKingschatId());
+                user.setKingschatId(kcId);
                 user.setRole("USER");
                 user.setRegisteredAt(LocalDateTime.now());
             }
@@ -205,8 +215,9 @@ public class UserController {
             User savedUser = userRepository.save(user);
             return ResponseEntity.ok(savedUser);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"message\": \"KingsChat login failed: \" + e.getMessage() + \"}" );
+                    .body("{\"message\": \"KingsChat login failed: " + e.getMessage() + "\"}");
         }
     }
 
