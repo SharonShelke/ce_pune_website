@@ -20,7 +20,16 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
         
         config.setAllowCredentials(true);
-        config.setAllowedOriginPatterns(Arrays.asList("*"));
+        config.setAllowedOrigins(Arrays.asList(
+            "http://ceindiazone2.in",
+            "https://ceindiazone2.in",
+            "http://www.ceindiazone2.in",
+            "https://www.ceindiazone2.in",
+            "http://localhost:3000",
+            "https://localhost:3000",
+            "http://3.111.187.235",
+            "https://3.111.187.235"
+        ));
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setExposedHeaders(Arrays.asList("Authorization"));
