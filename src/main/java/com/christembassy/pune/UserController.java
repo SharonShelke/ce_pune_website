@@ -361,5 +361,30 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired reset token/OTP");
     }
 
+    static class ResetPasswordFirebasePhoneRequest {
+        public String phone;
+        public String newPassword;
+    }
+
+    @PostMapping("/reset-password-firebase-phone")
+    public ResponseEntity<?> resetPasswordFirebasePhone(@RequestBody ResetPasswordFirebasePhoneRequest request) {
+        if (request.phone == null || request.phone.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Phone number is required");
+        }
+        if (request.newPassword == null || request.newPassword.isEmpty()) {
+            return ResponseEntity.badRequest().body("New password is required");
+        }
+
+        Optional<User> userOpt = userRepository.findByPhone(request.phone.trim());
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found for this phone number");
+        }
+
+        User user = userOpt.get();
+        user.setPassword(passwordEncoder.encode(request.newPassword));
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Password reset successfully");
+    }
 
 }
