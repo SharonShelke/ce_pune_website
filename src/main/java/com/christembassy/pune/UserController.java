@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+
 public class UserController {
 
     @Autowired
@@ -147,6 +147,119 @@ public class UserController {
         }
     }
 
+    @org.springframework.beans.factory.annotation.Value("${kingschat.client.id:}")
+    private String kingsChatClientId;
+
+    @org.springframework.beans.factory.annotation.Value("${frontend.url:http://localhost:3000}")
+    private String frontendUrl;
+
+    @RequestMapping(value = "/kingschat/callback", method = {RequestMethod.GET, RequestMethod.POST})
+    public org.springframework.web.servlet.view.RedirectView kingschatCallback(
+            @RequestParam(value = "code", required = false) String paramCode,
+            @RequestBody(required = false) java.util.Map<String, Object> bodyPayload) {
+        
+        String code = paramCode;
+        if (code == null && bodyPayload != null && bodyPayload.get("code") != null) {
+            code = String.valueOf(bodyPayload.get("code"));
+        }
+        
+        if (code == null || code.trim().isEmpty()) {
+            return new org.springframework.web.servlet.view.RedirectView(frontendUrl + "/login?error=MissingKingsChatCode");
+        }
+        
+        try {
+            org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+            
+            // 1. Exchange code for token
+            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+            
+            java.util.Map<String, String> tokenRequest = new java.util.HashMap<>();
+            tokenRequest.put("grant_type", "code");
+            tokenRequest.put("client_id", kingsChatClientId);
+            tokenRequest.put("code", code);
+            
+            org.springframework.http.HttpEntity<java.util.Map<String, String>> requestEntity = new org.springframework.http.HttpEntity<>(tokenRequest, headers);
+            
+            java.util.Map<String, Object> tokenResponse = restTemplate.postForObject(
+                "https://connect.kingsch.at/developer/api/oauth2/token", 
+                requestEntity, 
+                java.util.Map.class
+            );
+            
+            if (tokenResponse == null || !tokenResponse.containsKey("access_token")) {
+                return new org.springframework.web.servlet.view.RedirectView(frontendUrl + "/login?error=TokenExchangeFailed");
+            }
+            
+            String accessToken = (String) tokenResponse.get("access_token");
+            
+            // 2. Fetch User Profile
+            org.springframework.http.HttpHeaders profileHeaders = new org.springframework.http.HttpHeaders();
+            profileHeaders.setBearerAuth(accessToken);
+            org.springframework.http.HttpEntity<Void> profileEntity = new org.springframework.http.HttpEntity<>(profileHeaders);
+            
+            org.springframework.http.ResponseEntity<java.util.Map> profileResponse = restTemplate.exchange(
+                "https://connect.kingsch.at/developer/api/user/profile",
+                org.springframework.http.HttpMethod.GET,
+                profileEntity,
+                java.util.Map.class
+            );
+            
+            java.util.Map<String, Object> profile = profileResponse.getBody();
+            if (profile == null || profile.get("id") == null) {
+                return new org.springframework.web.servlet.view.RedirectView(frontendUrl + "/login?error=ProfileFetchFailed");
+            }
+            
+            String kcId = String.valueOf(profile.get("id"));
+            String email = (String) profile.get("email");
+            String phone = (String) profile.get("phone_number");
+            String firstName = (String) profile.get("first_name");
+            String lastName = (String) profile.get("last_name");
+            
+            if (email == null || email.trim().isEmpty()) {
+                email = kcId + "@kingschat.com";
+            }
+            if (phone != null && phone.trim().isEmpty()) phone = null;
+            
+            Optional<User> userOpt = Optional.empty();
+            if (email != null) userOpt = userRepository.findByEmail(email);
+            if (userOpt.isEmpty() && kcId != null) userOpt = userRepository.findByKingschatId(kcId);
+            if (userOpt.isEmpty() && phone != null) userOpt = userRepository.findByPhone(phone);
+            
+            User user;
+            if (userOpt.isPresent()) {
+                user = userOpt.get();
+                if ((user.getName() == null || user.getName().isEmpty()) && firstName != null) {
+                    user.setName((firstName + " " + (lastName != null ? lastName : "")).trim());
+                }
+                if (user.getKingschatId() == null) user.setKingschatId(kcId);
+                if (user.getLoginIdentifier() == null || user.getLoginIdentifier().isEmpty()) {
+                    user.setLoginIdentifier(email);
+                }
+            } else {
+                user = new User();
+                user.setEmail(email);
+                user.setPhone(phone);
+                user.setLoginIdentifier(email);
+                String fullName = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+                user.setName(fullName.trim().isEmpty() ? "KingsChat User" : fullName.trim());
+                user.setKingschatId(kcId);
+                user.setRole("USER");
+                user.setRegisteredAt(LocalDateTime.now());
+            }
+            
+            String jwt = jwtUtils.generateToken(user.getLoginIdentifier());
+            user.setCurrentSessionToken(jwt);
+            userRepository.saveAndFlush(user);
+            
+            return new org.springframework.web.servlet.view.RedirectView(frontendUrl + "/kingschat-success?token=" + jwt);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new org.springframework.web.servlet.view.RedirectView(frontendUrl + "/login?error=" + java.net.URLEncoder.encode(e.getMessage(), java.nio.charset.StandardCharsets.UTF_8));
+        }
+    }
+
     @PostMapping({"/kingchat", "/kingschat-login"})
     public ResponseEntity<?> kingchatLogin(@RequestBody KingsChatLoginRequest request) {
         try {
@@ -250,6 +363,22 @@ public class UserController {
     @GetMapping("/users")
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(jakarta.servlet.http.HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            if (jwtUtils.validateToken(token)) {
+                String loginId = jwtUtils.getUsernameFromToken(token);
+                Optional<User> userOpt = userRepository.findByLoginIdentifier(loginId);
+                if (userOpt.isPresent()) {
+                    return ResponseEntity.ok(userOpt.get());
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(java.util.Map.of("message", "Invalid or missing token"));
     }
 
 

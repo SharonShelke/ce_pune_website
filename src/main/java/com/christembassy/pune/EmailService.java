@@ -18,8 +18,12 @@ public class EmailService {
     @Value("${frontend.url:http://ceindiazone2.in}")
     private String frontendUrl;
 
+    @Value("${spring.mail.username}")
+    private String senderEmail;
+
     public void sendResetLink(String toEmail, String resetToken, String name) {
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(senderEmail);
         message.setTo(toEmail);
         message.setSubject("Reset Your Christ Embassy Pune Password");
 
@@ -38,6 +42,7 @@ public class EmailService {
 
     public void sendEnrollmentRequest(String name, String phone, String email) {
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(senderEmail);
         String[] recipients = {"Chifitahjoy@gmail.com", "sharonshelke1@Gmail.com"};
         message.setTo(recipients);
         message.setSubject("New Enrollment Request: " + name);
@@ -57,6 +62,7 @@ public class EmailService {
 
     public void sendFellowshipJoinNotification(String cellName, String name, String email, String phone, String address, String messageContent) {
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(senderEmail);
         String[] recipients = {"7jbking0102@gmail.com", "sharonshelke1@gmail.com"};
         message.setTo(recipients);
         message.setSubject("Fellowship Join Request: " + cellName);
@@ -78,6 +84,7 @@ public class EmailService {
 
     public void sendPasswordResetSuccessEmail(String toEmail, String name) {
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(senderEmail);
         message.setTo(toEmail);
         message.setSubject("Password Reset Successful - Christ Embassy Pune");
 

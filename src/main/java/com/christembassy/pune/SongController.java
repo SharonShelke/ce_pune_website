@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/songs")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+
 public class SongController {
 
     @Autowired
