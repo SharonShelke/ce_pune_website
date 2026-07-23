@@ -102,4 +102,20 @@ public class EmailService {
 
         mailSender.send(message);
     }
+
+    public void sendNewsletterSubscription(String email) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(senderEmail);
+        String[] recipients = {"neelam.d@cepune.in", "sharonshelke1@gmail.com"};
+        message.setTo(recipients);
+        message.setSubject("New Newsletter Subscription");
+
+        message.setText("Dear Administrator,\n\n" +
+                "A new user has subscribed to the newsletter on the CE Pune Website.\n\n" +
+                "Subscriber Email: " + email + "\n\n" +
+                "Regards,\n" +
+                "CE Pune Website");
+
+        mailSender.send(message);
+    }
 }
