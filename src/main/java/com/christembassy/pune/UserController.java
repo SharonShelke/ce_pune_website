@@ -206,7 +206,7 @@ public class UserController {
             org.springframework.http.HttpEntity<Void> profileEntity = new org.springframework.http.HttpEntity<>(profileHeaders);
             
             org.springframework.http.ResponseEntity<java.util.Map> profileResponse = restTemplate.exchange(
-                "https://connect.kingsch.at/developer/api/user/profile",
+                "https://connect.kingsch.at/api/profile",
                 org.springframework.http.HttpMethod.GET,
                 profileEntity,
                 java.util.Map.class
