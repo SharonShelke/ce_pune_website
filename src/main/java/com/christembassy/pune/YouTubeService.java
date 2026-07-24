@@ -1,19 +1,20 @@
 package com.christembassy.pune;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class YouTubeService {
-
-    @Value("${youtube.api.key}")
-    private String apiKey;
 
     @Value("${youtube.channel.id}")
     private String channelId;
@@ -33,91 +34,54 @@ public class YouTubeService {
         result.put("videoId", "VjmBpyecvIo"); // Fallback
 
         try {
-            // 1. Check for live video
-            String liveUrl = "https://www.googleapis.com/youtube/v3/search"
-                    + "?key=" + apiKey
-                    + "&channelId=" + channelId
-                    + "&part=snippet,id"
-                    + "&eventType=live"
-                    + "&type=video"
-                    + "&maxResults=1";
-
-            System.out.println("Checking for live video with URL: " + liveUrl);
-            String liveResponse = restTemplate.getForObject(liveUrl, String.class);
-            JSONObject liveJson = new JSONObject(liveResponse);
-            JSONArray liveItems = liveJson.getJSONArray("items");
-
-            if (liveItems.length() > 0) {
-                System.out.println("Live video found!");
-                JSONObject video = liveItems.getJSONObject(0);
-                result.put("videoId", video.getJSONObject("id").getString("videoId"));
-                result.put("isLive", true);
-                
-                cachedStatus = result;
-                lastFetchTime = System.currentTimeMillis();
-                return result;
-            }
-
-            // 2. Check for upcoming streams
-            System.out.println("No live video found in response. Checking for upcoming streams...");
-            String upcomingUrl = "https://www.googleapis.com/youtube/v3/search"
-                    + "?key=" + apiKey
-                    + "&channelId=" + channelId
-                    + "&part=snippet,id"
-                    + "&eventType=upcoming"
-                    + "&type=video"
-                    + "&maxResults=1";
-            String upcomingResponse = restTemplate.getForObject(upcomingUrl, String.class);
-            JSONObject upcomingJson = new JSONObject(upcomingResponse);
-            JSONArray upcomingItems = upcomingJson.getJSONArray("items");
+            System.out.println("Scraping YouTube live status for channel: " + channelId);
+            String url = "https://www.youtube.com/channel/" + channelId + "/live";
             
-            if (upcomingItems.length() > 0) {
-                System.out.println("Upcoming video found!");
-                JSONObject video = upcomingItems.getJSONObject(0);
-                result.put("videoId", video.getJSONObject("id").getString("videoId"));
-                result.put("isLive", false);
-                
-                cachedStatus = result;
-                lastFetchTime = System.currentTimeMillis();
-                return result;
-            }
-
-            // 3. Fallback to latest uploaded video if not live and not upcoming
-            System.out.println("No upcoming video found. Checking for latest uploaded video...");
-            String latestUrl = "https://www.googleapis.com/youtube/v3/search"
-                    + "?key=" + apiKey
-                    + "&channelId=" + channelId
-                    + "&part=snippet,id"
-                    + "&order=date"
-                    + "&type=video"
-                    + "&maxResults=1";
-            String latestResponse = restTemplate.getForObject(latestUrl, String.class);
-            JSONObject latestJson = new JSONObject(latestResponse);
-            JSONArray latestItems = latestJson.getJSONArray("items");
-
-            if (latestItems.length() > 0) {
-                System.out.println("Latest uploaded video found!");
-                JSONObject video = latestItems.getJSONObject(0);
-                result.put("videoId", video.getJSONObject("id").getString("videoId"));
-                result.put("isLive", false);
-                
-                cachedStatus = result;
-                lastFetchTime = System.currentTimeMillis();
-                return result;
-            }
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36");
+            headers.set("Accept-Language", "en-US,en;q=0.9");
+            HttpEntity<String> entity = new HttpEntity<>(headers);
             
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+            String html = response.getBody();
+            
+            if (html != null) {
+                // Find canonical URL
+                Pattern pattern = Pattern.compile("<link rel=\"canonical\" href=\"(https://www.youtube.com/watch\\?v=[^\"]+)\">");
+                Matcher matcher = pattern.matcher(html);
+                
+                if (matcher.find()) {
+                    String canonicalUrl = matcher.group(1);
+                    String videoId = canonicalUrl.split("v=")[1];
+                    System.out.println("Found video page: " + videoId);
+                    
+                    if (html.contains("\"isLiveNow\":true")) {
+                        System.out.println("Video is currently LIVE!");
+                        result.put("isLive", true);
+                        result.put("videoId", videoId);
+                    } else if (html.contains("\"isUpcoming\":true")) {
+                        System.out.println("Video is UPCOMING.");
+                        result.put("isLive", false);
+                        result.put("videoId", videoId);
+                    } else {
+                        System.out.println("Video is a past VOD or not live.");
+                        result.put("isLive", false);
+                        result.put("videoId", videoId);
+                    }
+                } else {
+                    System.out.println("No watch page canonical link found. Channel is not live.");
+                }
+            }
         } catch (Exception e) {
-            System.err.println("Error fetching YouTube status: " + e.getMessage());
+            System.err.println("Error scraping YouTube status: " + e.getMessage());
             e.printStackTrace();
         }
 
-        System.out.println("Returning fallback video: VjmBpyecvIo");
         cachedStatus = result;
         lastFetchTime = System.currentTimeMillis();
         return result;
     }
 
-    // Keep backward compatibility for /latest
     public String getLatestVideo() {
         return (String) getStatus().get("videoId");
     }
