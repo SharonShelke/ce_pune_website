@@ -1,20 +1,19 @@
 package com.christembassy.pune;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 public class YouTubeService {
+
+    @Value("${youtube.api.key}")
+    private String apiKey;
 
     @Value("${youtube.channel.id}")
     private String channelId;
@@ -34,46 +33,84 @@ public class YouTubeService {
         result.put("videoId", "VjmBpyecvIo"); // Fallback
 
         try {
-            System.out.println("Scraping YouTube live status for channel: " + channelId);
-            String url = "https://www.youtube.com/channel/" + channelId + "/live";
+            System.out.println("Checking YouTube live status via Playlist API for channel: " + channelId);
             
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36");
-            headers.set("Accept-Language", "en-US,en;q=0.9");
-            HttpEntity<String> entity = new HttpEntity<>(headers);
+            // The uploads playlist ID is the channel ID with 'UU' instead of 'UC'
+            String uploadsPlaylistId = "UU" + channelId.substring(2);
             
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-            String html = response.getBody();
-            
-            if (html != null) {
-                // Find canonical URL
-                Pattern pattern = Pattern.compile("<link rel=\"canonical\" href=\"(https://www.youtube.com/watch\\?v=[^\"]+)\">");
-                Matcher matcher = pattern.matcher(html);
-                
-                if (matcher.find()) {
-                    String canonicalUrl = matcher.group(1);
-                    String videoId = canonicalUrl.split("v=")[1];
-                    System.out.println("Found video page: " + videoId);
-                    
-                    if (html.contains("\"isLiveNow\":true")) {
-                        System.out.println("Video is currently LIVE!");
-                        result.put("isLive", true);
-                        result.put("videoId", videoId);
-                    } else if (html.contains("\"isUpcoming\":true")) {
-                        System.out.println("Video is UPCOMING.");
-                        result.put("isLive", false);
-                        result.put("videoId", videoId);
-                    } else {
-                        System.out.println("Video is a past VOD or not live.");
-                        result.put("isLive", false);
-                        result.put("videoId", videoId);
-                    }
-                } else {
-                    System.out.println("No watch page canonical link found. Channel is not live.");
+            // 1. Fetch the latest 3 videos from the uploads playlist (Cost: 1 quota point)
+            String playlistUrl = "https://www.googleapis.com/youtube/v3/playlistItems"
+                    + "?part=snippet"
+                    + "&playlistId=" + uploadsPlaylistId
+                    + "&maxResults=3"
+                    + "&key=" + apiKey;
+
+            String playlistResponse = restTemplate.getForObject(playlistUrl, String.class);
+            JSONObject playlistJson = new JSONObject(playlistResponse);
+            JSONArray playlistItems = playlistJson.getJSONArray("items");
+
+            if (playlistItems.length() > 0) {
+                // Collect video IDs
+                StringBuilder videoIds = new StringBuilder();
+                for (int i = 0; i < playlistItems.length(); i++) {
+                    JSONObject item = playlistItems.getJSONObject(i);
+                    String vId = item.getJSONObject("snippet").getJSONObject("resourceId").getString("videoId");
+                    if (i > 0) videoIds.append(",");
+                    videoIds.append(vId);
                 }
+
+                // 2. Check the live status of these videos (Cost: 1 quota point)
+                String videosUrl = "https://www.googleapis.com/youtube/v3/videos"
+                        + "?part=snippet,liveStreamingDetails"
+                        + "&id=" + videoIds.toString()
+                        + "&key=" + apiKey;
+
+                String videosResponse = restTemplate.getForObject(videosUrl, String.class);
+                JSONObject videosJson = new JSONObject(videosResponse);
+                JSONArray videosItems = videosJson.getJSONArray("items");
+
+                String latestVideoId = null;
+                String upcomingVideoId = null;
+
+                for (int i = 0; i < videosItems.length(); i++) {
+                    JSONObject video = videosItems.getJSONObject(i);
+                    String vId = video.getString("id");
+                    String broadcastContent = video.getJSONObject("snippet").getString("liveBroadcastContent");
+                    
+                    if (latestVideoId == null) {
+                        latestVideoId = vId; // Save the most recent one as fallback
+                    }
+
+                    if ("live".equals(broadcastContent)) {
+                        System.out.println("Live video found! Video ID: " + vId);
+                        result.put("isLive", true);
+                        result.put("videoId", vId);
+                        
+                        cachedStatus = result;
+                        lastFetchTime = System.currentTimeMillis();
+                        return result;
+                    } else if ("upcoming".equals(broadcastContent)) {
+                        if (upcomingVideoId == null) {
+                            upcomingVideoId = vId; // Save the upcoming one
+                        }
+                    }
+                }
+
+                // If not live, fall back to upcoming, or latest video
+                if (upcomingVideoId != null) {
+                    System.out.println("No live video found, but upcoming found: " + upcomingVideoId);
+                    result.put("isLive", false);
+                    result.put("videoId", upcomingVideoId);
+                } else if (latestVideoId != null) {
+                    System.out.println("No live video found, using latest video: " + latestVideoId);
+                    result.put("isLive", false);
+                    result.put("videoId", latestVideoId);
+                }
+            } else {
+                System.out.println("No videos found in the uploads playlist.");
             }
         } catch (Exception e) {
-            System.err.println("Error scraping YouTube status: " + e.getMessage());
+            System.err.println("Error checking YouTube status: " + e.getMessage());
             e.printStackTrace();
         }
 
