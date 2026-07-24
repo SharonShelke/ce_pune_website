@@ -203,18 +203,26 @@ public class UserController {
             // 2. Fetch User Profile
             org.springframework.http.HttpHeaders profileHeaders = new org.springframework.http.HttpHeaders();
             profileHeaders.setBearerAuth(accessToken);
+            if (kingsChatClientSecret != null) {
+                profileHeaders.set("api-key", kingsChatClientSecret);
+            }
             org.springframework.http.HttpEntity<Void> profileEntity = new org.springframework.http.HttpEntity<>(profileHeaders);
             
             org.springframework.http.ResponseEntity<java.util.Map> profileResponse = restTemplate.exchange(
-                "https://connect.kingsch.at/api/profile",
+                "https://connect.kingsch.at/developer/api/user/profile",
                 org.springframework.http.HttpMethod.GET,
                 profileEntity,
                 java.util.Map.class
             );
             
-            java.util.Map<String, Object> profile = profileResponse.getBody();
-            if (profile == null || profile.get("id") == null) {
+            java.util.Map<String, Object> body = profileResponse.getBody();
+            if (body == null || !body.containsKey("profile")) {
                 return new org.springframework.web.servlet.view.RedirectView(frontendUrl + "/signIn?error=ProfileFetchFailed");
+            }
+            
+            java.util.Map<String, Object> profile = (java.util.Map<String, Object>) body.get("profile");
+            if (profile == null || profile.get("id") == null) {
+                return new org.springframework.web.servlet.view.RedirectView(frontendUrl + "/signIn?error=ProfileDataMissing");
             }
             
             String kcId = String.valueOf(profile.get("id"));
