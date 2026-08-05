@@ -184,7 +184,7 @@ public class UserController {
             if (kingsChatClientSecret != null && !kingsChatClientSecret.isEmpty()) {
                 tokenRequest.put("client_secret", kingsChatClientSecret);
             }
-            tokenRequest.put("redirect_uri", "https://ceindiazone2.in");
+            tokenRequest.put("redirect_uri", "http://ceindiazone2.in");
 
             org.springframework.http.HttpEntity<java.util.Map<String, String>> requestEntity = new org.springframework.http.HttpEntity<>(tokenRequest, headers);
 
