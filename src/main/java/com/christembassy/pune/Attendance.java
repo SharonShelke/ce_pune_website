@@ -13,12 +13,20 @@ public class Attendance {
     private int count;
     @Column(name = "submission_time")
     private LocalDateTime submissionTime;
+    @Column(name = "user_name")
+    private String userName;
+    
+    @Column(name = "user_email")
+    private String userEmail;
+
     public Attendance() {
         this.submissionTime = LocalDateTime.now();
     }
     public Attendance(User user, int count) {
         this.user = user;
         this.count = count;
+        this.userName = user.getName();
+        this.userEmail = user.getEmail() != null ? user.getEmail() : user.getLoginIdentifier();
         this.submissionTime = LocalDateTime.now();
     }
     public Long getId() { return id; }
@@ -29,4 +37,10 @@ public class Attendance {
     public void setCount(int count) { this.count = count; }
     public LocalDateTime getSubmissionTime() { return submissionTime; }
     public void setSubmissionTime(LocalDateTime submissionTime) { this.submissionTime = submissionTime; }
+    
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
+    
+    public String getUserEmail() { return userEmail; }
+    public void setUserEmail(String userEmail) { this.userEmail = userEmail; }
 }

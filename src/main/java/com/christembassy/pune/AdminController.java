@@ -27,10 +27,11 @@ public class AdminController {
         
         // Convert to DTOs
         List<AttendanceDTO> dtos = list.stream().map(a -> new AttendanceDTO(
-            a.getUser().getName(), 
-            a.getUser().getPlatform(), // Assuming User has getPlatform()
-            a.getCount(), 
-            a.getSubmissionTime()
+                a.getUserName() != null ? a.getUserName() : (a.getUser() != null ? a.getUser().getName() : "Unknown"),
+                a.getUserEmail() != null ? a.getUserEmail() : (a.getUser() != null ? (a.getUser().getEmail() != null ? a.getUser().getEmail() : a.getUser().getLoginIdentifier()) : "Unknown"),
+                a.getUser() != null ? a.getUser().getPlatform() : "Unknown",
+                a.getCount(),
+                a.getSubmissionTime()
         )).collect(Collectors.toList());
         return ResponseEntity.ok(dtos);
     }
@@ -42,7 +43,7 @@ public class AdminController {
             Sheet sheet = workbook.createSheet("Attendance Report");
             // Header Row
             Row headerRow = sheet.createRow(0);
-            String[] columns = {"User Name", "Platform", "Device Model", "Attendees Count", "Submission Time"};
+            String[] columns = {"Name", "Email", "Platform", "Count", "Submission Time"};
             for (int i = 0; i < columns.length; i++) {
                 Cell cell = headerRow.createCell(i);
                 cell.setCellValue(columns[i]);
@@ -58,11 +59,11 @@ public class AdminController {
             
             for (Attendance a : list) {
                 Row row = sheet.createRow(rowNum++);
-                row.createCell(0).setCellValue(a.getUser().getName() != null ? a.getUser().getName() : "N/A");
-                row.createCell(1).setCellValue(a.getUser().getPlatform() != null ? a.getUser().getPlatform() : "N/A");
-                row.createCell(2).setCellValue(a.getUser().getDeviceModel() != null ? a.getUser().getDeviceModel() : "N/A");
+                row.createCell(0).setCellValue(a.getUserName() != null ? a.getUserName() : (a.getUser() != null ? a.getUser().getName() : "Unknown"));
+                row.createCell(1).setCellValue(a.getUserEmail() != null ? a.getUserEmail() : (a.getUser() != null ? (a.getUser().getEmail() != null ? a.getUser().getEmail() : a.getUser().getLoginIdentifier()) : "Unknown"));
+                row.createCell(2).setCellValue(a.getUser() != null ? a.getUser().getPlatform() : "Unknown");
                 row.createCell(3).setCellValue(a.getCount());
-                row.createCell(4).setCellValue(a.getSubmissionTime().format(formatter));
+                row.createCell(4).setCellValue(a.getSubmissionTime() != null ? a.getSubmissionTime().format(formatter) : "");
             }
             // Resize columns
             for (int i = 0; i < columns.length; i++) {

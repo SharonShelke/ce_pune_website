@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +28,10 @@ public class YouTubeService {
             return cachedStatus;
         }
 
-        RestTemplate restTemplate = new RestTemplate();
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(3000); // 3 seconds
+        factory.setReadTimeout(3000); // 3 seconds
+        RestTemplate restTemplate = new RestTemplate(factory);
         Map<String, Object> result = new HashMap<>();
         result.put("isLive", false);
         result.put("videoId", "VjmBpyecvIo"); // Fallback
