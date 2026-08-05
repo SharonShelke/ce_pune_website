@@ -25,6 +25,7 @@ public class JwtUtils {
 
     public String generateToken(String username) {
         return Jwts.builder()
+                .serializeToJsonWith(new io.jsonwebtoken.jackson.io.JacksonSerializer<>())
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
@@ -34,6 +35,7 @@ public class JwtUtils {
 
     public String getUsernameFromToken(String token) {
         return Jwts.parserBuilder()
+                .deserializeJsonWith(new io.jsonwebtoken.jackson.io.JacksonDeserializer<>())
                 .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
@@ -43,7 +45,11 @@ public class JwtUtils {
 
     public boolean validateToken(String authToken) {
         try {
-            Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(authToken);
+            Jwts.parserBuilder()
+                .deserializeJsonWith(new io.jsonwebtoken.jackson.io.JacksonDeserializer<>())
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(authToken);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             // Log error
