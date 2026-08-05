@@ -56,7 +56,7 @@ public class DataInitializer {
     private void seedAnnouncements() {
         if (announcementRepository.count() == 0) {
             announcementRepository.save(new Announcement("2025 Year of manifestation", "Embrace the glory of His appearing", "🎉", 1));
-            announcementRepository.save(new Announcement("May - Month of \"advancement\"", "Moving forward by the Spirit", "😊", 2));
+            announcementRepository.save(new Announcement("August - Month of \"Progression\"", "Genesis 26:12-13: \"Then Isaac sowed in that land, and reaped in the same year an hundredfold: and the LORD blessed him. And the man waxed great, and went forward, and grew until he became very great.\"", "📈", 2));
             announcementRepository.save(new Announcement("Early Morning Prayer", "Join us daily at 5:30 AM", "⏰", 3));
         }
     }
