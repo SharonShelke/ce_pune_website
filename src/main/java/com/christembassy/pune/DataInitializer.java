@@ -62,7 +62,6 @@ public class DataInitializer {
     }
 
     private void seedFellowships() {
-        fellowshipRepository.deleteAll();
         List<Fellowship> fellowships = Arrays.asList(
                 new Fellowship("ZOE 1", "PASTOR NANCY MATHEW", "86003 40609", "Online", "MH", "Pune", "Saturdays, 5:00 PM", "A vibrant online community focused on Word-based fellowship."),
                 new Fellowship("FAVOR (P)", "BRO TONNIE DAS", "9923759249", "Pune", "MH", "Pune", "Saturdays, 6:00 PM", "Growing together in grace and faith."),
@@ -212,6 +211,25 @@ public class DataInitializer {
                 new Fellowship("RAPHA", "JASBIN CHRISTOPHER", "8526042416", "THISAYANVILAI", "TN", "Kanyakumari", "Saturdays, 5:00 PM", "")
             );
 
+        List<Fellowship> existing = fellowshipRepository.findAll();
+        if (existing.isEmpty()) {
             fellowshipRepository.saveAll(fellowships);
+        } else {
+            for (Fellowship h : fellowships) {
+                boolean found = false;
+                for (Fellowship e : existing) {
+                    if (h.getName().equals(e.getName()) && (h.getLocation().equals(e.getLocation()) || (h.getLocation().isEmpty() && e.getLocation().isEmpty()))) {
+                        e.setState(h.getState());
+                        e.setCity(h.getCity());
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    existing.add(h);
+                }
+            }
+            fellowshipRepository.saveAll(existing);
+        }
     }
 }
