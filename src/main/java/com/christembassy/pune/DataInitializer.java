@@ -74,7 +74,7 @@ public class DataInitializer {
                 new Fellowship("ZOE 4", "SIS SHOMA", "85271 39450", "Bhugaon", "MH", "Pune", "Saturdays, 6:00 PM", "Experiencing the life of God in its fullness."),
                 new Fellowship("ABLAZE", "SIS JOYCE CHIFITAH", "260 978540835", "Keshavnagar", "MH", "Pune", "Saturdays, 5:30 PM", "Setting our community on fire for Christ."),
                 new Fellowship("THE LOGOS", "SIS NANDINI PAUL", "93225 28522", "(Akurdi) Online", "MH", "Pune", "Saturdays, 7:00 PM", "Deep study and meditation on the Word."),
-                new Fellowship("LIVING WATER", "SIS STELLA", "", "Goa", "GA", "Panaji", "Saturdays, 4:00 PM", "Refreshing the soul with the living water of the Spirit."),
+
                 new Fellowship("ZOE 6", "PASTOR NANCY MATHEW", "86003 40609", "Kharadi", "MH", "Pune", "Saturdays, 5:00 PM", "Spreading the gospel in the heart of Kharadi."),
                 new Fellowship("TRUEVINE", "SIS JOANNA EPHREM", "7758991652", "Pune", "MH", "Pune", "Saturdays, 6:00 PM", "Abiding in the Vine to bear much fruit."),
                 new Fellowship("NEW BEGINNING", "SIS POONAM TRIBHUVAN", "9373352622", "Undri", "MH", "Pune", "Saturdays, 5:00 PM", "Start your journey of faith with us."),
@@ -158,11 +158,7 @@ public class DataInitializer {
                 new Fellowship("MAHIMA-03", "SIS NEHA", "7058613795", "Toranwade Vasti", "MH", "Beed", "Saturdays, 5:00 PM", ""),
                 new Fellowship("MAHIMA-04", "SIS NEHA", "7058613795", "Beed", "MH", "Beed", "Saturdays, 5:00 PM", ""),
                 new Fellowship("DIVINE", "SIS SUNANDA SASANE", "8356883011", "Shrirampur", "MH", "Ahilyanagar", "Saturdays, 5:00 PM", ""),
-                new Fellowship("PROSPEROUS", "SIS SUMALATHA", "9900268253", "Bangalore (Online)", "KA", "Bengaluru", "Saturdays, 5:00 PM", ""),
-                new Fellowship("MULTIPLICATION", "BRO RAJINIKANTH", "9538145553", "Bangalore (Online)", "KA", "Bengaluru", "Saturdays, 5:00 PM", ""),
-                new Fellowship("PROLIFIC WISDOM", "PASTOR SANTOSH", "9901735784", "Bangalore (Online)", "KA", "Bengaluru", "Saturdays, 5:00 PM", ""),
-                new Fellowship("HIGHER LIFE", "SIS JERUSHA", "9901613648", "Bangalore (Online)", "KA", "Bengaluru", "Saturdays, 5:00 PM", ""),
-                new Fellowship("VICTORY", "SIS CHUKEY", "7001713905", "Bangalore (Online)", "KA", "Bengaluru", "Saturdays, 5:00 PM", ""),
+
                 new Fellowship("PHRONESIS CELL 1", "BRO ANDINDILILE", "9266513954", "Deepliving GR, UP", "UP", "Greater Noida", "Saturdays, 5:00 PM", ""),
                 new Fellowship("PHRONESIS CELL 2", "SIS JACQUELINE", "88265 78474", "", "UP", "Greater Noida", "Saturdays, 5:00 PM", ""),
                 new Fellowship("PHRONESIS CELL 3", "SIS JEMIMA", "9289735078", "Online", "UP", "Greater Noida", "Saturdays, 5:00 PM", ""),
@@ -229,6 +225,15 @@ public class DataInitializer {
                 }
             }
             fellowshipRepository.saveAll(existing);
+            
+            // Remove obsolete states from DB
+            List<Fellowship> toDelete = existing.stream()
+                .filter(e -> "GA".equals(e.getState()) || "KA".equals(e.getState()))
+                .collect(java.util.stream.Collectors.toList());
+            if (!toDelete.isEmpty()) {
+                fellowshipRepository.deleteAll(toDelete);
+                existing.removeAll(toDelete);
+            }
         }
     }
 }
