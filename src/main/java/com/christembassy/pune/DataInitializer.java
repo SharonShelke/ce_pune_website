@@ -74,7 +74,6 @@ public class DataInitializer {
                 new Fellowship("ZOE 4", "SIS SHOMA", "85271 39450", "Bhugaon", "MH", "Pune", "Saturdays, 6:00 PM", "Experiencing the life of God in its fullness."),
                 new Fellowship("ABLAZE", "SIS JOYCE CHIFITAH", "260 978540835", "Keshavnagar", "MH", "Pune", "Saturdays, 5:30 PM", "Setting our community on fire for Christ."),
                 new Fellowship("THE LOGOS", "SIS NANDINI PAUL", "93225 28522", "(Akurdi) Online", "MH", "Pune", "Saturdays, 7:00 PM", "Deep study and meditation on the Word."),
-
                 new Fellowship("ZOE 6", "PASTOR NANCY MATHEW", "86003 40609", "Kharadi", "MH", "Pune", "Saturdays, 5:00 PM", "Spreading the gospel in the heart of Kharadi."),
                 new Fellowship("TRUEVINE", "SIS JOANNA EPHREM", "7758991652", "Pune", "MH", "Pune", "Saturdays, 6:00 PM", "Abiding in the Vine to bear much fruit."),
                 new Fellowship("NEW BEGINNING", "SIS POONAM TRIBHUVAN", "9373352622", "Undri", "MH", "Pune", "Saturdays, 5:00 PM", "Start your journey of faith with us."),
@@ -159,22 +158,27 @@ public class DataInitializer {
                 new Fellowship("MAHIMA-04", "SIS NEHA", "7058613795", "Beed", "MH", "Beed", "Saturdays, 5:00 PM", ""),
                 new Fellowship("DIVINE", "SIS SUNANDA SASANE", "8356883011", "Shrirampur", "MH", "Ahmednagar", "Saturdays, 5:00 PM", ""),
 
-                new Fellowship("PHRONESIS CELL 1", "BRO ANDINDILILE", "9266513954", "Deepliving GR, UP", "DL", "Greater Noida", "Saturdays, 5:00 PM", ""),
-                new Fellowship("PHRONESIS CELL 2", "SIS JACQUELINE", "88265 78474", "", "DL", "Greater Noida", "Saturdays, 5:00 PM", ""),
-                new Fellowship("PHRONESIS CELL 3", "SIS JEMIMA", "9289735078", "Online", "DL", "Greater Noida", "Saturdays, 5:00 PM", ""),
-                new Fellowship("PHRONESIS CELL 4", "BRO CALVIN", "9773979934", "Online", "DL", "Greater Noida", "Saturdays, 5:00 PM", ""),
-                new Fellowship("ABUNDANCE CELL", "SIS SHIDAT", "7630024645", "Casa Grande 1, GR, UP", "DL", "Greater Noida", "Saturdays, 5:00 PM", ""),
-                new Fellowship("GLORIOUS CELL", "SIS DOREEN", "93116 88738", "", "DL", "Greater Noida", "Saturdays, 5:00 PM", ""),
-                new Fellowship("GLORY CELL 1", "SIS JACQUELINE", "88265 78474", "Qube Studios Habitech, GR, UP", "DL", "Greater Noida", "Saturdays, 5:00 PM", ""),
-                new Fellowship("GLORY CELL 2", "SIS RECIDA", "9599223756", "Supertech Upcountry, GR, UP", "DL", "Greater Noida", "Saturdays, 5:00 PM", ""),
-                new Fellowship("MIMSHACH CELL 1", "SIS FLORENCE", "", "Vadodara Gujarat", "DL", "Vadodara", "Saturdays, 5:00 PM", ""),
-                new Fellowship("MIMSHACH CELL 2", "BRO WISDOM", "89746 96860", "Faridabad, Delhi", "DL", "Faridabad", "Saturdays, 5:00 PM", ""),
+                // Greater Noida — Uttar Pradesh (CORRECTED from DL)
+                new Fellowship("PHRONESIS CELL 1", "BRO ANDINDILILE", "9266513954", "Deepliving GR, UP", "UP", "Greater Noida", "Saturdays, 5:00 PM", ""),
+                new Fellowship("PHRONESIS CELL 2", "SIS JACQUELINE", "88265 78474", "", "UP", "Greater Noida", "Saturdays, 5:00 PM", ""),
+                new Fellowship("PHRONESIS CELL 3", "SIS JEMIMA", "9289735078", "Online", "UP", "Greater Noida", "Saturdays, 5:00 PM", ""),
+                new Fellowship("PHRONESIS CELL 4", "BRO CALVIN", "9773979934", "Online", "UP", "Greater Noida", "Saturdays, 5:00 PM", ""),
+                new Fellowship("ABUNDANCE CELL", "SIS SHIDAT", "7630024645", "Casa Grande 1, GR, UP", "UP", "Greater Noida", "Saturdays, 5:00 PM", ""),
+                new Fellowship("GLORIOUS CELL", "SIS DOREEN", "93116 88738", "", "UP", "Greater Noida", "Saturdays, 5:00 PM", ""),
+                new Fellowship("GLORY CELL 1", "SIS JACQUELINE", "88265 78474", "Qube Studios Habitech, GR, UP", "UP", "Greater Noida", "Saturdays, 5:00 PM", ""),
+                new Fellowship("GLORY CELL 2", "SIS RECIDA", "9599223756", "Supertech Upcountry, GR, UP", "UP", "Greater Noida", "Saturdays, 5:00 PM", ""),
+                // Vadodara — Gujarat (CORRECTED from DL)
+                new Fellowship("MIMSHACH CELL 1", "SIS FLORENCE", "", "Vadodara Gujarat", "GJ", "Vadodara", "Saturdays, 5:00 PM", ""),
+                // Faridabad — Haryana (CORRECTED from DL)
+                new Fellowship("MIMSHACH CELL 2", "BRO WISDOM", "89746 96860", "Faridabad, Delhi", "HR", "Faridabad", "Saturdays, 5:00 PM", ""),
+                // Uttarakhand
                 new Fellowship("MIMSHACH-4", "BRO JOSHUA FOGBAWA", "", "Sai hostel Dehradun Uttarakhand (boys hostel)", "UT", "Dehradun", "Saturdays, 5:00 PM", ""),
                 new Fellowship("MIMSHACH-5", "Sis Brenda nambi", "955757635", "auditorium school campus Graphic era university", "UT", "Dehradun", "Saturdays, 5:00 PM", ""),
                 new Fellowship("MIMSHACH-6", "SIS Veronica Mulanda", "8360304134", "school campus Graphic Era university", "UT", "Dehradun", "Saturdays, 5:00 PM", ""),
                 new Fellowship("MIMSHACH-7", "SIS Sarah Amongi", "", "Graphic Era university campus Graphic", "UT", "Dehradun", "Saturdays, 5:00 PM", ""),
                 new Fellowship("PERFECTION", "SIS TSHIDY", "9520604791", "Mother Teresa hostel Dehradun Uttarakhand", "UT", "Dehradun", "Saturdays, 5:00 PM", ""),
                 new Fellowship("PHOSTER CELL", "Sis Ruth Kwagala", "9520602684", "Graphic Era university campus", "UT", "Dehradun", "Saturdays, 5:00 PM", ""),
+                // Telangana — Hyderabad
                 new Fellowship("IMPACT", "SIS PRISCILLA", "9030760434", "Haneef Colony, New Hafeezpet, Hyderabad", "TG", "Hyderabad", "Saturdays, 5:00 PM", ""),
                 new Fellowship("LIGHT", "SIS MONIKA DEBORAH", "9100462052", "Prem nagar, New hafeezpet, Hyderabad", "TG", "Hyderabad", "Saturdays, 5:00 PM", ""),
                 new Fellowship("ZOE (HYD)", "SIS SHALINI", "7207417714", "Pragathi Nagar, Kukatpally, Hyderabad", "TG", "Hyderabad", "Saturdays, 5:00 PM", ""),
@@ -190,6 +194,7 @@ public class DataInitializer {
                 new Fellowship("BERACHAH", "BRO ZOE", "8367543025", "Gowrishankar Nagar", "MH", "Pune", "Saturdays, 5:00 PM", ""),
                 new Fellowship("MIRACLE", "SIS JYOTI", "", "ONLINE CELL MEETING", "MH", "Pune", "Saturdays, 5:00 PM", ""),
                 new Fellowship("HIGHLY PROLIFIC", "BRO LEVI BHARATH KUMAR", "", "Sundhariah colony", "MH", "Pune", "Saturdays, 5:00 PM", ""),
+                // Tamil Nadu
                 new Fellowship("HENOTES", "SIS DR ANITA LYDIA", "98869 73868", "Karungal", "TN", "Karungal", "Saturdays, 5:00 PM", ""),
                 new Fellowship("MERCY", "V.J.OSWALD NEWTON", "9488941999", "ZION NAGAR", "TN", "Kanyakumari", "Saturdays, 5:00 PM", ""),
                 new Fellowship("GRACE", "VIJI KUMAR", "96773 42375", "MIDALAM", "TN", "Midalam", "Saturdays, 5:00 PM", ""),
@@ -204,7 +209,9 @@ public class DataInitializer {
                 boolean found = false;
                 for (Fellowship e : existing) {
                     if (h.getName().equals(e.getName()) && (h.getLocation().equals(e.getLocation()) || (h.getLocation().isEmpty() && e.getLocation().isEmpty()))) {
+                        // Update state to the corrected value
                         e.setState(h.getState());
+                        e.setCity(h.getCity());
                         found = true;
                         break;
                     }
@@ -214,12 +221,14 @@ public class DataInitializer {
                 }
             }
             fellowshipRepository.saveAll(existing);
-            
-            // Remove obsolete states from DB
+
+            // Remove fellowships with obsolete/unknown state codes
             List<Fellowship> toDelete = existing.stream()
                 .filter(e -> {
                     String s = e.getState();
-                    return s == null || (!s.equals("MH") && !s.equals("TG") && !s.equals("GA") && !s.equals("DL") && !s.equals("TN") && !s.equals("UT"));
+                    return s == null || (!s.equals("MH") && !s.equals("TG") && !s.equals("GA")
+                            && !s.equals("UP") && !s.equals("HR") && !s.equals("GJ")
+                            && !s.equals("DL") && !s.equals("TN") && !s.equals("UT"));
                 })
                 .collect(java.util.stream.Collectors.toList());
             if (!toDelete.isEmpty()) {
