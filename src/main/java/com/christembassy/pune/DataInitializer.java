@@ -220,7 +220,6 @@ public class DataInitializer {
                 for (Fellowship e : existing) {
                     if (h.getName().equals(e.getName()) && (h.getLocation().equals(e.getLocation()) || (h.getLocation().isEmpty() && e.getLocation().isEmpty()))) {
                         e.setState(h.getState());
-                        e.setCity(h.getCity());
                         found = true;
                         break;
                     }

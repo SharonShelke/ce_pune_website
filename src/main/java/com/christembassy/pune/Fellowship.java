@@ -14,19 +14,17 @@ public class Fellowship {
     private String phoneNumber;
     private String location;
     private String state;
-    private String city;
     private String meetingTime;
     private String description;
 
     public Fellowship() {}
 
-    public Fellowship(String name, String leaderName, String phoneNumber, String location, String state, String city, String meetingTime, String description) {
+    public Fellowship(String name, String leaderName, String phoneNumber, String location, String state, String meetingTime, String description) {
         this.name = name;
         this.leaderName = leaderName;
         this.phoneNumber = phoneNumber;
         this.location = location;
         this.state = state;
-        this.city = city;
         this.meetingTime = meetingTime;
         this.description = description;
     }
@@ -44,8 +42,7 @@ public class Fellowship {
     public void setLocation(String location) { this.location = location; }
     public String getState() { return state; }
     public void setState(String state) { this.state = state; }
-    public String getCity() { return city; }
-    public void setCity(String city) { this.city = city; }
+    public void setCity(String city) { }
     public String getMeetingTime() { return meetingTime; }
     public void setMeetingTime(String meetingTime) { this.meetingTime = meetingTime; }
     public String getDescription() { return description; }
