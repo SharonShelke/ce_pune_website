@@ -44,6 +44,7 @@ public class Fellowship {
     public void setLocation(String location) { this.location = location; }
     public String getState() { return state; }
     public void setState(String state) { this.state = state; }
+    public String getCity() { return city; }
     public void setCity(String city) { this.city = city; }
     public String getMeetingTime() { return meetingTime; }
     public void setMeetingTime(String meetingTime) { this.meetingTime = meetingTime; }

@@ -99,7 +99,7 @@ public class DataInitializer {
                 new Fellowship("RADIANCE 1", "PST PARAG SURYWANSHI", "9890511102", "Pune", "MH", "Pune", "Saturdays, 6:00 PM", "Shining the light of the gospel."),
                 new Fellowship("CHARIS 1", "SIS LAM NAIK", "9975677661", "Kondhwa", "MH", "Pune", "Saturdays, 5:30 PM", "Living in the abundance of God's grace."),
                 new Fellowship("DUNAMIS 1", "SIS REKHA FERNADES", "8605116220", "Manjari", "MH", "Pune", "Saturdays, 6:00 PM", "Walking in power and authority."),
-                new Fellowship("SAMRUDHI CELL 1", "SIS SAVITA KADAM", "83088 72140", "Wabori, Nagar", "MH", "Ahilyanagar", "Saturdays, 5:00 PM", "Prospering in all areas of life."),
+                new Fellowship("SAMRUDHI CELL 1", "SIS SAVITA KADAM", "83088 72140", "Wabori, Nagar", "MH", "Ahmednagar", "Saturdays, 5:00 PM", "Prospering in all areas of life."),
                 new Fellowship("GRACE-01", "SIS SAVITA", "8010566833", "Vaiduwadi", "MH", "Pune", "Saturdays, 5:30 PM", "Abounding in grace and love."),
                 new Fellowship("MAHIMA-01", "SIS NEHA", "7058613795", "Khole Vasti", "MH", "Pune", "Saturdays, 6:00 PM", "Displaying the glory of God."),
                 // Newly added cells from image transcription
@@ -149,7 +149,7 @@ public class DataInitializer {
                 new Fellowship("DUNAMIS 2", "SIS REKHA FERNADES", "8605116220", "Manjari", "MH", "Pune", "Saturdays, 5:00 PM", ""),
                 new Fellowship("DUNAMIS 3", "SIS BABITA", "", "Manjari", "MH", "Pune", "Saturdays, 5:00 PM", ""),
                 new Fellowship("SAMRUDHI CELL 2", "SIS SAVITA KADAM", "83088 72140", "Malegaon, Sangamner", "MH", "Pune", "Saturdays, 5:00 PM", ""),
-                new Fellowship("SAMRUDHI CELL 3", "SIS SAVITA KADAM", "83088 72140", "Nagar City", "MH", "Ahilyanagar", "Saturdays, 5:00 PM", ""),
+                new Fellowship("SAMRUDHI CELL 3", "SIS SAVITA KADAM", "83088 72140", "Nagar City", "MH", "Ahmednagar", "Saturdays, 5:00 PM", ""),
                 new Fellowship("SAMRUDHI CELL 4", "SIS SAVITA KADAM", "83088 72140", "Takarabad", "MH", "Pune", "Saturdays, 5:00 PM", ""),
                 new Fellowship("GOD'S GRACE", "DCNS VAISHALI FRANCIS", "", "", "MH", "Pune", "Saturdays, 5:00 PM", ""),
                 new Fellowship("GRACE-02", "SIS SAVITA", "8010566833", "Jaysingpur", "MH", "Kolhapur", "Saturdays, 5:00 PM", ""),
@@ -157,24 +157,24 @@ public class DataInitializer {
                 new Fellowship("MAHIMA-02", "SIS NEHA", "7058613795", "Jamkhed Vasti", "MH", "Beed", "Saturdays, 5:00 PM", ""),
                 new Fellowship("MAHIMA-03", "SIS NEHA", "7058613795", "Toranwade Vasti", "MH", "Beed", "Saturdays, 5:00 PM", ""),
                 new Fellowship("MAHIMA-04", "SIS NEHA", "7058613795", "Beed", "MH", "Beed", "Saturdays, 5:00 PM", ""),
-                new Fellowship("DIVINE", "SIS SUNANDA SASANE", "8356883011", "Shrirampur", "MH", "Ahilyanagar", "Saturdays, 5:00 PM", ""),
+                new Fellowship("DIVINE", "SIS SUNANDA SASANE", "8356883011", "Shrirampur", "MH", "Ahmednagar", "Saturdays, 5:00 PM", ""),
 
-                new Fellowship("PHRONESIS CELL 1", "BRO ANDINDILILE", "9266513954", "Deepliving GR, UP", "UP", "Greater Noida", "Saturdays, 5:00 PM", ""),
-                new Fellowship("PHRONESIS CELL 2", "SIS JACQUELINE", "88265 78474", "", "UP", "Greater Noida", "Saturdays, 5:00 PM", ""),
-                new Fellowship("PHRONESIS CELL 3", "SIS JEMIMA", "9289735078", "Online", "UP", "Greater Noida", "Saturdays, 5:00 PM", ""),
-                new Fellowship("PHRONESIS CELL 4", "BRO CALVIN", "9773979934", "Online", "UP", "Greater Noida", "Saturdays, 5:00 PM", ""),
-                new Fellowship("ABUNDANCE CELL", "SIS SHIDAT", "7630024645", "Casa Grande 1, GR, UP", "UP", "Greater Noida", "Saturdays, 5:00 PM", ""),
-                new Fellowship("GLORIOUS CELL", "SIS DOREEN", "93116 88738", "", "UP", "Greater Noida", "Saturdays, 5:00 PM", ""),
-                new Fellowship("GLORY CELL 1", "SIS JACQUELINE", "88265 78474", "Qube Studios Habitech, GR, UP", "UP", "Greater Noida", "Saturdays, 5:00 PM", ""),
-                new Fellowship("GLORY CELL 2", "SIS RECIDA", "9599223756", "Supertech Upcountry, GR, UP", "UP", "Greater Noida", "Saturdays, 5:00 PM", ""),
-                new Fellowship("MIMSHACH CELL 1", "SIS FLORENCE", "", "Vadodara Gujarat", "GJ", "Vadodara", "Saturdays, 5:00 PM", ""),
-                new Fellowship("MIMSHACH CELL 2", "BRO WISDOM", "89746 96860", "Faridabad, Delhi", "HR", "Faridabad", "Saturdays, 5:00 PM", ""),
-                new Fellowship("MIMSHACH-4", "BRO JOSHUA FOGBAWA", "", "Sai hostel Dehradun Uttarakhand (boys hostel)", "UK", "Dehradun", "Saturdays, 5:00 PM", ""),
-                new Fellowship("MIMSHACH-5", "Sis Brenda nambi", "955757635", "auditorium school campus Graphic era university", "UK", "Dehradun", "Saturdays, 5:00 PM", ""),
-                new Fellowship("MIMSHACH-6", "SIS Veronica Mulanda", "8360304134", "school campus Graphic Era university", "UK", "Dehradun", "Saturdays, 5:00 PM", ""),
-                new Fellowship("MIMSHACH-7", "SIS Sarah Amongi", "", "Graphic Era university campus Graphic", "UK", "Dehradun", "Saturdays, 5:00 PM", ""),
-                new Fellowship("PERFECTION", "SIS TSHIDY", "9520604791", "Mother Teresa hostel Dehradun Uttarakhand", "UK", "Dehradun", "Saturdays, 5:00 PM", ""),
-                new Fellowship("PHOSTER CELL", "Sis Ruth Kwagala", "9520602684", "Graphic Era university campus", "UK", "Dehradun", "Saturdays, 5:00 PM", ""),
+                new Fellowship("PHRONESIS CELL 1", "BRO ANDINDILILE", "9266513954", "Deepliving GR, UP", "DL", "Greater Noida", "Saturdays, 5:00 PM", ""),
+                new Fellowship("PHRONESIS CELL 2", "SIS JACQUELINE", "88265 78474", "", "DL", "Greater Noida", "Saturdays, 5:00 PM", ""),
+                new Fellowship("PHRONESIS CELL 3", "SIS JEMIMA", "9289735078", "Online", "DL", "Greater Noida", "Saturdays, 5:00 PM", ""),
+                new Fellowship("PHRONESIS CELL 4", "BRO CALVIN", "9773979934", "Online", "DL", "Greater Noida", "Saturdays, 5:00 PM", ""),
+                new Fellowship("ABUNDANCE CELL", "SIS SHIDAT", "7630024645", "Casa Grande 1, GR, UP", "DL", "Greater Noida", "Saturdays, 5:00 PM", ""),
+                new Fellowship("GLORIOUS CELL", "SIS DOREEN", "93116 88738", "", "DL", "Greater Noida", "Saturdays, 5:00 PM", ""),
+                new Fellowship("GLORY CELL 1", "SIS JACQUELINE", "88265 78474", "Qube Studios Habitech, GR, UP", "DL", "Greater Noida", "Saturdays, 5:00 PM", ""),
+                new Fellowship("GLORY CELL 2", "SIS RECIDA", "9599223756", "Supertech Upcountry, GR, UP", "DL", "Greater Noida", "Saturdays, 5:00 PM", ""),
+                new Fellowship("MIMSHACH CELL 1", "SIS FLORENCE", "", "Vadodara Gujarat", "DL", "Vadodara", "Saturdays, 5:00 PM", ""),
+                new Fellowship("MIMSHACH CELL 2", "BRO WISDOM", "89746 96860", "Faridabad, Delhi", "DL", "Faridabad", "Saturdays, 5:00 PM", ""),
+                new Fellowship("MIMSHACH-4", "BRO JOSHUA FOGBAWA", "", "Sai hostel Dehradun Uttarakhand (boys hostel)", "UT", "Dehradun", "Saturdays, 5:00 PM", ""),
+                new Fellowship("MIMSHACH-5", "Sis Brenda nambi", "955757635", "auditorium school campus Graphic era university", "UT", "Dehradun", "Saturdays, 5:00 PM", ""),
+                new Fellowship("MIMSHACH-6", "SIS Veronica Mulanda", "8360304134", "school campus Graphic Era university", "UT", "Dehradun", "Saturdays, 5:00 PM", ""),
+                new Fellowship("MIMSHACH-7", "SIS Sarah Amongi", "", "Graphic Era university campus Graphic", "UT", "Dehradun", "Saturdays, 5:00 PM", ""),
+                new Fellowship("PERFECTION", "SIS TSHIDY", "9520604791", "Mother Teresa hostel Dehradun Uttarakhand", "UT", "Dehradun", "Saturdays, 5:00 PM", ""),
+                new Fellowship("PHOSTER CELL", "Sis Ruth Kwagala", "9520602684", "Graphic Era university campus", "UT", "Dehradun", "Saturdays, 5:00 PM", ""),
                 new Fellowship("IMPACT", "SIS PRISCILLA", "9030760434", "Haneef Colony, New Hafeezpet, Hyderabad", "TG", "Hyderabad", "Saturdays, 5:00 PM", ""),
                 new Fellowship("LIGHT", "SIS MONIKA DEBORAH", "9100462052", "Prem nagar, New hafeezpet, Hyderabad", "TG", "Hyderabad", "Saturdays, 5:00 PM", ""),
                 new Fellowship("ZOE (HYD)", "SIS SHALINI", "7207417714", "Pragathi Nagar, Kukatpally, Hyderabad", "TG", "Hyderabad", "Saturdays, 5:00 PM", ""),
@@ -183,28 +183,17 @@ public class DataInitializer {
                 new Fellowship("PROLIFIC BELIVERS", "SIS GLORY", "", "Prashant Nagar, Kondapur, Hyderabad", "TG", "Hyderabad", "Saturdays, 5:00 PM", ""),
                 new Fellowship("THE PRAYER", "BR JONATHAN", "9866760561", "Prem nagar, New hafeezpet, Hyderabad", "TG", "Hyderabad", "Saturdays, 5:00 PM", ""),
                 new Fellowship("GATHERING CLOUDS", "BRO CHARLES", "9502422665", "New Hafeezpet, Hyderabad", "TG", "Hyderabad", "Saturdays, 5:00 PM", ""),
-                new Fellowship("THE JOY", "BRO ANDREW", "", "Siddipet, Telangana", "TG", "Hyderabad", "Saturdays, 5:00 PM", ""),
+                new Fellowship("THE JOY", "BRO ANDREW", "", "Siddipet, Telangana", "TG", "Siddipet", "Saturdays, 5:00 PM", ""),
                 new Fellowship("IGNITING SPIRITS", "SIS GLORY", "", "Prashant Nagar, Kondapur, Hyderabad", "TG", "Hyderabad", "Saturdays, 5:00 PM", ""),
-                new Fellowship("KABHOSH", "Sis Preeti", "", "Siddipet, Telangana", "TG", "Hyderabad", "Saturdays, 5:00 PM", ""),
+                new Fellowship("KABHOSH", "Sis Preeti", "", "Siddipet, Telangana", "TG", "Siddipet", "Saturdays, 5:00 PM", ""),
                 new Fellowship("SHINING FOR CHRIST", "SIS ROSEY", "", "Online", "MH", "Pune", "Saturdays, 5:00 PM", ""),
-                new Fellowship("NEW CREATION GLORIOUS", "BRO SHALOM RAJ", "7702178204", "Poosalavada", "AP", "Badvel", "Saturdays, 5:00 PM", ""),
-                new Fellowship("VICTORY", "SIS SARAH ROSE", "9701217387", "Siva nagar 2", "AP", "Badvel", "Saturdays, 5:00 PM", ""),
-                new Fellowship("AGAPE", "BRO SUDARSHAN", "7660809006", "Rishaw colony", "AP", "Badvel", "Saturdays, 5:00 PM", ""),
                 new Fellowship("BERACHAH", "BRO ZOE", "8367543025", "Gowrishankar Nagar", "MH", "Pune", "Saturdays, 5:00 PM", ""),
                 new Fellowship("MIRACLE", "SIS JYOTI", "", "ONLINE CELL MEETING", "MH", "Pune", "Saturdays, 5:00 PM", ""),
-                new Fellowship("REDEEMERS", "PST SHALOM RAJ (PASTOR)", "", "Chenduvaiah Palli", "AP", "Badvel", "Saturdays, 5:00 PM", ""),
-                new Fellowship("JOSHUA", "BRO LEVI BHARATH KUMAR", "", "Fathima nagar", "AP", "Badvel", "Saturdays, 5:00 PM", ""),
-                new Fellowship("CHARIS", "BRO SHYAM", "8179064055", "Sundariah colony", "AP", "Badvel", "Saturdays, 5:00 PM", ""),
-                new Fellowship("IMPACT (AP)", "SIS SARAH ROSE", "9701217387", "Siva nagar", "AP", "Badvel", "Saturdays, 5:00 PM", ""),
-                new Fellowship("SOPHIA", "SIS ALEKYA", "", "Gudam", "AP", "Badvel", "Saturdays, 5:00 PM", ""),
                 new Fellowship("HIGHLY PROLIFIC", "BRO LEVI BHARATH KUMAR", "", "Sundhariah colony", "MH", "Pune", "Saturdays, 5:00 PM", ""),
-                new Fellowship("FAVOR (AP)", "BRO SHYAM", "", "Bhindhala colony", "AP", "Badvel", "Saturdays, 5:00 PM", ""),
-                new Fellowship("ALM", "BRO SUDHA JOSEPH", "", "ALM Colony", "AP", "Badvel", "Saturdays, 5:00 PM", ""),
-                new Fellowship("ZION", "SIS USHA", "", "Fathima nagar", "AP", "Badvel", "Saturdays, 5:00 PM", ""),
-                new Fellowship("HENOTES", "SIS DR ANITA LYDIA", "98869 73868", "Karungal", "TN", "Kanyakumari", "Saturdays, 5:00 PM", ""),
+                new Fellowship("HENOTES", "SIS DR ANITA LYDIA", "98869 73868", "Karungal", "TN", "Karungal", "Saturdays, 5:00 PM", ""),
                 new Fellowship("MERCY", "V.J.OSWALD NEWTON", "9488941999", "ZION NAGAR", "TN", "Kanyakumari", "Saturdays, 5:00 PM", ""),
-                new Fellowship("GRACE", "VIJI KUMAR", "96773 42375", "MIDALAM", "TN", "Kanyakumari", "Saturdays, 5:00 PM", ""),
-                new Fellowship("RAPHA", "JASBIN CHRISTOPHER", "8526042416", "THISAYANVILAI", "TN", "Kanyakumari", "Saturdays, 5:00 PM", "")
+                new Fellowship("GRACE", "VIJI KUMAR", "96773 42375", "MIDALAM", "TN", "Midalam", "Saturdays, 5:00 PM", ""),
+                new Fellowship("RAPHA", "JASBIN CHRISTOPHER", "8526042416", "THISAYANVILAI", "TN", "Thisayanvilai", "Saturdays, 5:00 PM", "")
             );
 
         List<Fellowship> existing = fellowshipRepository.findAll();
@@ -228,7 +217,10 @@ public class DataInitializer {
             
             // Remove obsolete states from DB
             List<Fellowship> toDelete = existing.stream()
-                .filter(e -> "GA".equals(e.getState()) || "KA".equals(e.getState()))
+                .filter(e -> {
+                    String s = e.getState();
+                    return s == null || (!s.equals("MH") && !s.equals("TG") && !s.equals("GA") && !s.equals("DL") && !s.equals("TN") && !s.equals("UT"));
+                })
                 .collect(java.util.stream.Collectors.toList());
             if (!toDelete.isEmpty()) {
                 fellowshipRepository.deleteAll(toDelete);
