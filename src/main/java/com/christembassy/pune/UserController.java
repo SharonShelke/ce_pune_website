@@ -175,18 +175,18 @@ public class UserController {
 
             // 1. Exchange code for token
             org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
-            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+            headers.setContentType(org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED);
 
-            java.util.Map<String, String> tokenRequest = new java.util.HashMap<>();
-            tokenRequest.put("grant_type", "authorization_code");
-            tokenRequest.put("client_id", kingsChatClientId);
-            tokenRequest.put("code", code);
+            org.springframework.util.MultiValueMap<String, String> tokenRequest = new org.springframework.util.LinkedMultiValueMap<>();
+            tokenRequest.add("grant_type", "authorization_code");
+            tokenRequest.add("client_id", kingsChatClientId);
+            tokenRequest.add("code", code);
             if (kingsChatClientSecret != null && !kingsChatClientSecret.isEmpty()) {
-                tokenRequest.put("client_secret", kingsChatClientSecret);
+                tokenRequest.add("client_secret", kingsChatClientSecret);
             }
-            tokenRequest.put("redirect_uri", "https://ceindiazone2.in");
+            tokenRequest.add("redirect_uri", "https://ceindiazone2.in");
 
-            org.springframework.http.HttpEntity<java.util.Map<String, String>> requestEntity = new org.springframework.http.HttpEntity<>(tokenRequest, headers);
+            org.springframework.http.HttpEntity<org.springframework.util.MultiValueMap<String, String>> requestEntity = new org.springframework.http.HttpEntity<>(tokenRequest, headers);
 
             java.util.Map<String, Object> tokenResponse = restTemplate.postForObject(
                 "https://connect.kingsch.at/developer/api/oauth2/token", 
