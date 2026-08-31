@@ -3,7 +3,7 @@
 
 $localJar = "C:\Users\Sharon\IdeaProjects\ce_pune_website\target\ce-pune-backend-1.0-SNAPSHOT.jar"
 $keyPath = "C:\Users\Sharon\Downloads\aws-springboot\ceindia-key.pem"
-$serverHost = "ec2-user@3.111.23.156"
+$serverHost = "deploy@148.66.154.48"
 
 Write-Host "1. Building backend JAR..." -ForegroundColor Green
 mvn clean package -DskipTests
