@@ -23,7 +23,42 @@ public class YouTubeService {
     private long lastFetchTime = 0;
     private static final long CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
+    // Manual override for unlisted live streams
+    private String forcedLiveVideoId = null;
+
+    /**
+     * Force the website to show a specific video ID as "live".
+     * Use this when going live on an unlisted YouTube stream.
+     */
+    public void forceLiveStatus(String videoId) {
+        this.forcedLiveVideoId = videoId;
+        this.cachedStatus = null; // Invalidate cache so the override takes effect immediately
+        System.out.println("Force-live override set to video ID: " + videoId);
+    }
+
+    /**
+     * Clear the manual override and let the YouTube API detect live status again.
+     */
+    public void clearForceLiveStatus() {
+        this.forcedLiveVideoId = null;
+        this.cachedStatus = null; // Invalidate cache
+        System.out.println("Force-live override cleared. Reverting to automatic YouTube API detection.");
+    }
+
+    public boolean isForceLiveActive() {
+        return this.forcedLiveVideoId != null;
+    }
+
     public Map<String, Object> getStatus() {
+        // Check manual override first (for unlisted live streams)
+        if (forcedLiveVideoId != null) {
+            Map<String, Object> overrideResult = new HashMap<>();
+            overrideResult.put("isLive", true);
+            overrideResult.put("videoId", forcedLiveVideoId);
+            overrideResult.put("source", "manual-override");
+            return overrideResult;
+        }
+
         if (cachedStatus != null && (System.currentTimeMillis() - lastFetchTime < CACHE_DURATION)) {
             return cachedStatus;
         }
