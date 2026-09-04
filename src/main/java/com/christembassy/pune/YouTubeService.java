@@ -21,7 +21,7 @@ public class YouTubeService {
 
     private Map<String, Object> cachedStatus = null;
     private long lastFetchTime = 0;
-    private static final long CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+    private static final long CACHE_DURATION = 2 * 60 * 1000; // 2 minutes
 
     // Manual override for unlisted live streams
     private String forcedLiveVideoId = null;
