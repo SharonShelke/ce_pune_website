@@ -15,6 +15,12 @@ public class DataInitializer {
     private FellowshipRepository fellowshipRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+
+    @Autowired
     private AnnouncementRepository announcementRepository;
 
     @Autowired
@@ -26,6 +32,7 @@ public class DataInitializer {
             seedFellowships();
             seedAnnouncements();
             seedSongs();
+            seedAdmin();
         };
     }
 
@@ -245,4 +252,43 @@ public class DataInitializer {
             }
         }
     }
+
+    private void seedAdmin() {
+        try {
+            // Default Admin Credentials: admin@cepune.org / Admin@123
+            String defaultAdminEmail = "admin@cepune.org";
+            java.util.Optional<User> adminOpt = userRepository.findByEmail(defaultAdminEmail);
+            if (adminOpt.isEmpty()) {
+                User admin = new User();
+                admin.setEmail(defaultAdminEmail);
+                admin.setLoginIdentifier(defaultAdminEmail);
+                admin.setName("Christ Embassy Admin");
+                admin.setPassword(passwordEncoder.encode("Admin@123"));
+                admin.setRole("ADMIN");
+                admin.setPlatform("Web");
+                admin.setRegisteredAt(java.time.LocalDateTime.now());
+                userRepository.save(admin);
+                System.out.println("Default Admin seeded successfully: " + defaultAdminEmail + " / Admin@123");
+            } else {
+                User admin = adminOpt.get();
+                if (!"ADMIN".equals(admin.getRole())) {
+                    admin.setRole("ADMIN");
+                    userRepository.save(admin);
+                }
+            }
+
+            // Also ensure church admin email cepune01@gmail.com has ADMIN role if registered
+            java.util.Optional<User> churchAdminOpt = userRepository.findByEmail("cepune01@gmail.com");
+            if (churchAdminOpt.isPresent()) {
+                User churchAdmin = churchAdminOpt.get();
+                if (!"ADMIN".equals(churchAdmin.getRole())) {
+                    churchAdmin.setRole("ADMIN");
+                    userRepository.save(churchAdmin);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error seeding default admin: " + e.getMessage());
+        }
+    }
+
 }

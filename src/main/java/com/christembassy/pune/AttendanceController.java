@@ -1,22 +1,23 @@
 package com.christembassy.pune;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/attendance")
-// REMOVED @CrossOrigin because WebConfig handles it.
 public class AttendanceController {
     @Autowired
     private AttendanceRepository attendanceRepository;
+    
     @Autowired
     private UserRepository userRepository;
+
     @PostMapping("/submit")
     public ResponseEntity<?> submitAttendance(@RequestBody Map<String, Object> payload) {
         try {
-            // payload: { "userId": 1, "count": 2 }
             Object userIdObj = payload.get("userId");
             Long userId = null;
             if (userIdObj instanceof Integer) {
@@ -29,13 +30,14 @@ public class AttendanceController {
             if (userId == null) return ResponseEntity.badRequest().body("User ID is required");
 
             int count = Integer.parseInt(payload.get("count").toString());
-            // Get the user from the SecurityContext (set by JwtFilter)
+            String requestedServiceName = payload.get("serviceName") != null ? payload.get("serviceName").toString() : null;
+
             String loginIdentifier = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
             Optional<User> userOptional = userRepository.findByLoginIdentifier(loginIdentifier);
             
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
-                Attendance attendance = new Attendance(user, count);
+                Attendance attendance = new Attendance(user, count, requestedServiceName);
                 attendanceRepository.save(attendance);
                 return ResponseEntity.ok("Attendance submitted successfully");
             } else {
