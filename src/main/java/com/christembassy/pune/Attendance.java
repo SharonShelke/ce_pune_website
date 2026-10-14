@@ -58,15 +58,15 @@ public class Attendance {
         if (day == DayOfWeek.SUNDAY) {
             // Hindi Service: 6am - 8am (window 5:00 to 9:30)
             if (timeVal >= 5.0 && timeVal < 9.5) {
-                return "Hindi Service (6am – 8am)";
+                return "Sunday Hindi Service (6am – 8am)";
             }
             // English Service: 10am - 12pm (window 9.5 to 14.0)
             else if (timeVal >= 9.5 && timeVal < 14.5) {
-                return "English Service (10am – 12pm)";
+                return "Sunday English Service (10am – 1pm)";
             }
             // Marathi Service: 5pm - 7pm (window 15.5 to 20.5)
             else if (timeVal >= 15.5 && timeVal < 21.0) {
-                return "Marathi Service (5pm – 7pm)";
+                return "Sunday Marathi Service (5pm – 7pm)";
             }
             return "Sunday Service";
         } else if (day == DayOfWeek.WEDNESDAY) {
